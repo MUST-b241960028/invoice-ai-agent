@@ -2,61 +2,118 @@
 
 ## Шийдлийн товч танилцуулга
 
-Энэхүү систем нь 100 invoice-ийг (15 JPG гар бичмэл + 4 PNG + 81 PDF) автоматаар боловсруулж, мэдээлэл олборлох, баталгаажуулах, ангилах, шийдвэр гаргах бүрэн pipeline хэрэгжүүлсэн AI agent юм. Claude Vision API болон Python дээр суурилсан.
+Байгууллагуудад invoice боловсруулалт нь цаг хугацаа их шаардах, алдаа гаргах магадлал өндөр гар ажиллагааны процесс байдаг. Энэхүү систем нь тэр процессыг бүрэн автоматжуулах **AI agent** юм — хэрэглэгч invoice файл upload хийхэд агент дангаараа уншиж, баталгаажуулж, ангилаад, шийдвэр гаргаж өгнө.
 
-## Загварын архитектур болон Agent Workflow
+Claude Vision API болон Python дээр суурилсан бөгөөд JPG гар бичмэл, PNG, PDF гэсэн бүх форматтай invoice-ийг нэгдсэн pipeline-аар боловсруулдаг.
+
+## Агент яаж ажилладаг вэ?
 
 Pipeline нь 5 үндсэн алхамтай:
 
-**Алхам 1: Extract** — Invoice файлаас structured data олборлох. PDF файлуудад PyMuPDF ашиглан эхний хуудсыг 200 DPI-тай PNG зураг болгон хөрвүүлж, Claude Vision API-д дамжуулсан. JPG/PNG зурагуудыг шууд Claude Vision API-д base64-ээр илгээсэн. Ингэснээр гар бичмэл болон дижитал бүх төрлийн invoice-ийг нэг unified multimodal extraction pipeline-аар боловсруулсан.
+**Алхам 1: Extract** — Invoice файлаас structured data автоматаар олборлох. PDF-ийг PyMuPDF-ээр 200 DPI PNG болгон хөрвүүлж, JPG/PNG зурагтай хамт Claude Vision API-д base64-ээр дамжуулна. Нэг unified multimodal pipeline нь гар бичмэл болон дижитал бүх invoice-ийг боловсруулдаг — тусдаа OCR эсвэл template хэрэггүй.
 
-**Алхам 2: Validate** — Master DB-тай тулган 5 төрлийн зөрчил шалгах. AMOUNT_MISMATCH (qty×unit_price≠total), UNREGISTERED_VENDOR (DB-д бүртгэлгүй), BANK_ACCOUNT_MISMATCH (данс/банк зөрүү), INVALID_DATE (parse алдаа, due<invoice, 2026-02-30), DUPLICATE (vendor+date+total давхцал).
+**Алхам 2: Validate** — Олборлосон мэдээллийг Master DB-тай тулган 5 төрлийн зөрчил автоматаар шалгана:
+- **AMOUNT_MISMATCH** — qty × unit_price ≠ total
+- **UNREGISTERED_VENDOR** — DB-д бүртгэлгүй нийлүүлэгч
+- **BANK_ACCOUNT_MISMATCH** — данс/банк DB-тай таарахгүй
+- **INVALID_DATE** — parse алдаа, due < invoice, 2026-02-30 гэх мэт боломжгүй огноо
+- **DUPLICATE** — 596 түүхэн invoice-тай vendor+date+total-аар тулгасан давхардал
 
-**Алхам 3: Classify** — 10 санхүүгийн ангилалд хуваарилах. 3 стратеги: (1) Vendor-ийн түүхэн ангилал, (2) Keyword matching, (3) Item DB matching.
+Шалгалт бүр дэлгэрэнгүй reasoning trace буцаана тул яагаад тэр шийдвэр гарсан нь тайлбарлагдана.
 
-**Алхам 4: Decide** — AUTO_POST (бүртгэлтэй, алдаагүй, confidence≥0.6, түүхтэй), HUMAN_APPROVAL (шинэ vendor, confidence<0.6, extraction алдаатай), DENY (зөрчилтэй: AMOUNT_MISMATCH, BANK_MISMATCH, INVALID_DATE, DUPLICATE, UNREGISTERED_VENDOR).
+**Алхам 3: Classify** — Invoice-ийг 10 санхүүгийн ангилалд хуваарилна. 3 давхар стратеги: (1) Vendor-ийн түүхэн ангиллын pattern, (2) Keyword matching, (3) Item DB тулгалт — нэг нь амжилтгүй болсон ч нөгөө нь ажиллана.
 
-**Алхам 5: Q&A** — Нийт үр дүн дээр aggregate асуултад хариулах.
+**Алхам 4: Decide** — Шалгалтын үр дүн болон confidence score-д үндэслэн эцсийн шийдвэр гаргана:
+- **AUTO_POST** — бүртгэлтэй vendor, бүх шалгалт давсан, confidence ≥ 0.6, түүхтэй
+- **HUMAN_APPROVAL** — шинэ vendor, confidence < 0.6, extraction алдаатай
+- **DENY** — зөрчил илэрсэн (AMOUNT_MISMATCH, BANK_MISMATCH, INVALID_DATE, DUPLICATE, UNREGISTERED_VENDOR)
 
-## Өгөгдөл боловсруулах, шалгах стратеги
+**Алхам 5: Q&A** — Боловсруулсан бүх invoice дээр aggregate асуултад хариулна. "Хэдэн invoice DENY болсон?", "Банкны зөрүүтэй invoice хэд?" гэх мэт асуултад тоо, дэлгэрэнгүй жишээгээр хариулна.
 
-**Multimodal боловсруулалт:** 3 төрлийн файл: JPG (гар бичмэл, утасны камераар авсан зураг), PNG (дижитал template), PDF (дижитал). PDF файлуудыг PyMuPDF-ээр 200 DPI PNG болгон хөрвүүлж, JPG/PNG зурагтай хамт Claude Vision API-д base64 encode хийн дамжуулсан. Ингэснээр гар бичмэл болон дижитал бүх invoice-ийг нэг unified pipeline-аар боловсруулсан.
+## Хэрэглэгч яаж ашиглах вэ?
 
-**Vendor тулгалт:** Regex normalize хийж (зай, тире зэргийг стандартчилсан) Master DB-ийн 10 vendor-тай харьцуулсан. Бүртгэлгүй vendor (Демо Компани-11, Демо Компани-12) илэрсэн.
+Систем нь **хоёр интерфэйстэй**:
 
-**Банкны мэдээлэл шалгалт:** Банкны нэр (Демо Банк 1/2) болон 10 оронтой данс дугаарыг DB-тай тулгасан. Гар бичмэлийн OCR алдаа (жишээ: 1002033445 vs 1002233445) болон санаатай зөрүү аль алийг нь илрүүлсэн.
+### 1. Streamlit web app (`app.py`)
+Гурван tab-тай:
+- **Upload & Analyze** — Invoice file upload хийхэд Claude Vision API уншиж, шалгалт хийж, шийдвэрийг дэлгэцэнд харуулна. PDF бол эхний хуудасны preview-г зэрэг харуулна.
+- **100 Invoice Results** — Нийт үнэлгээний дүн: AUTO_POST/DENY/HUMAN_APPROVAL тоо, зөрчлийн тархалт, deny болсон invoice-ийн жагсаалт.
+- **Q&A Chat** — Claude AI-тай invoice дата дээр чөлөөт асуулт хариулт. Mongolian болон English хэл аль алинд хариулна.
 
-**Огнооны шалгалт:** 2026-02-30 (Февраль 30 гэж байхгүй), due_date < invoice_date зэрэг алдааг илрүүлсэн.
+### 2. Batch pipeline (`pipeline.py`)
+Олон invoice-ийг нэг дор боловсруулах командын мөрийн хэрэгсэл. Eval dataset дээр `DATA_DIR` зааж өгөхөд бүх файлыг scan хийж, `full_results.json` болон CSV export хийнэ.
 
-**Давхардлын шалгалт:** 596 түүхэн invoice-тай vendor+date+grand_total-аар тулгасан.
+## Техникийн архитектур
 
-## Үнэлгээний үр дүн
+```
+Invoice (JPG/PNG/PDF)
+        │
+        ▼
+[PyMuPDF: PDF→PNG 200DPI]   [JPG/PNG шууд]
+        │                          │
+        └──────────┬───────────────┘
+                   ▼
+        [Claude Sonnet 4 Vision API]
+        [Base64 → Structured JSON]
+                   │
+                   ▼
+        [Validate — 5 шалгалт]
+        [Master DB: 10 vendors, 596 history]
+        [Reasoning trace буцаана]
+                   │
+                   ▼
+        [Classify — 10 category]
+        [Vendor history + Keyword + Items DB]
+                   │
+                   ▼
+        [Confidence Score 0.0–1.0]
+        [Key field completeness]
+                   │
+                   ▼
+        [Decision Engine]
+        ┌──────────┼──────────┐
+        ▼          ▼          ▼
+    AUTO_POST  HUMAN_APPROVAL  DENY
+                   │
+                   ▼
+        [Q&A Agent — Claude API]
+        [Aggregate analytics]
+```
+
+## Яагаад Claude Vision вэ?
+
+- Гар бичмэл invoice (JPG, утасны камераар авсан) болон дижитал PDF-ийг ижил pipeline-аар боловсруулна — тусдаа OCR систем хэрэггүй
+- Монгол хэлний invoice-ийг нэмэлт тохиргоогүй уншина
+- Нэг API call-д vendor нэр, данс, огноо, бараа жагсаалт, дүн зэрэг бүх талбарыг нэгэн зэрэг олборлоно
+- Extraction алдаатай эсвэл confidence бага бол HUMAN_APPROVAL руу чиглүүлж, нуугдмал алдаа гарахаас сэргийлнэ
+
+## Үнэлгээний үр дүн (100 нийтийн dataset)
 
 | Шалгуур | Тоо |
 |---------|-----|
 | Нийт invoice | 100 |
-| AUTO_POST (зөв) | 72 |
-| HUMAN_APPROVAL | 0 |
-| DENY (алдаатай/сэжигтэй) | 28 |
+| AUTO_POST | 72 |
+| HUMAN_APPROVAL | 0* |
+| DENY | 28 |
 
-| Зөрчлийн төрөл | Тоо | Жишээ |
-|----------------|-----|-------|
-| BANK_ACCOUNT_MISMATCH | 8 | invoice_002, 003, 013, 015, 039, 053, 056, 075 |
-| AMOUNT_MISMATCH | 5 | invoice_007, 028, 064, 080, 094 |
-| INVALID_DATE | 5 | invoice_005, 022, 034, 066, 087 |
-| UNREGISTERED_VENDOR | 5 | invoice_010, 026, 041, 088, 092 |
-| DUPLICATE | 5 | invoice_025, 035, 038, 047, 057 |
+*Нийтийн 100 invoice бүгд бүртгэлтэй vendor-тай, confidence өндөртэй байсан тул HUMAN_APPROVAL гараагүй. Eval dataset дээр extraction алдаатай эсвэл шинэ vendor байвал HUMAN_APPROVAL ажиллана.
 
-| Файлын төрөл | Тоо |
-|-------------|-----|
-| JPG (гар бичмэл) | 15 |
-| PNG (дижитал) | 4 |
-| PDF (дижитал) | 81 |
+| Зөрчлийн төрөл | Тоо |
+|----------------|-----|
+| BANK_ACCOUNT_MISMATCH | 8 |
+| AMOUNT_MISMATCH | 5 |
+| INVALID_DATE | 5 |
+| UNREGISTERED_VENDOR | 5 |
+| DUPLICATE | 5 |
 
-## Гол дүгнэлт, хязгаарлалт, цаашдын сайжруулалт
+## Хязгаарлалт ба цаашдын сайжруулалт
 
-**Гол дүгнэлт:** 100 invoice-ийн 72% нь зөв, 28% нь ямар нэг зөрчилтэй. Хамгийн түгээмэл зөрчил нь банкны дансны зөрүү (8), дараа нь математик алдаа, буруу огноо, бүртгэлгүй vendor, давхардал (тус бүр 5).
+**Хязгаарлалт:**
+1. Гар бичмэл OCR нарийвчлал — утасны зургаас тоо уншихад алдаа гарах магадлалтай (жишээ: 1002033445 vs 1002233445)
+2. Duplicate шалгалт нь яг ижил vendor+date+total-д тулгуурладаг — fuzzy partial duplicate илрүүлдэггүй
+3. Ангилал нь vendor-ийн түүхэн pattern-д тулгуурладаг тул шинэ vendor-д keyword fallback хэрэглэнэ
 
-**Хязгаарлалт:** (1) Гар бичмэл OCR нарийвчлал — утасны зургаас тоо уншихад алдаа гарах магадлалтай. (2) Duplicate шалгалт нь зөвхөн яг ижил vendor+date+total дээр суурилсан. (3) Ангилал нь vendor-ийн түүхэн pattern-д хэт хамааралтай.
-
-**Сайжруулалт:** (1) Fuzzy matching ашиглан partial duplicate илрүүлэх (одоо яг ижил vendor+date+total-аар хязгаарлагдсан). (2) Unit price-ийг Items DB-тай тулгаж нэгж үнийн зөрүү шалгах. (3) Ensemble approach: Claude Vision + regex fallback хослуулах.
+**Цаашдын сайжруулалт:**
+1. Fuzzy matching ашиглан partial duplicate илрүүлэх
+2. Unit price-ийг Items DB-тай тулгаж нэгж үнийн зөрүү шалгах
+3. Multi-page PDF дэмжих (одоо зөвхөн эхний хуудас)
