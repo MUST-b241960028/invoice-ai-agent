@@ -4,6 +4,33 @@ AI-powered invoice processing agent that extracts, validates, classifies, and ma
 
 ## Pipeline Architecture
 
+```mermaid
+flowchart TD
+    INPUT["📂 Invoice Input · JPG / PNG / PDF"]
+    INPUT --> SPLIT{File Type?}
+    SPLIT -->|PDF| PDF["🔧 PyMuPDF · Render → PNG 200 DPI"]
+    SPLIT -->|Image| IMG["🖼️ Base64 Encode"]
+    PDF --> VISION["🤖 Claude Sonnet 4 Vision API"]
+    IMG --> VISION
+    VISION --> JSON["📋 Structured JSON\nvendor · bank · dates · line items · total"]
+    JSON --> VAL
+    DB[("🗄️ Master DB\n10 vendors · 10 categories\n50 items · 596 history")] --> VAL
+    subgraph VAL["⚙️ Validation + Reasoning Trace"]
+        V1["💰 Amount Check"] & V2["🏢 Vendor Check"] & V3["🏦 Bank Check"] & V4["📅 Date Check"] & V5["🔁 Duplicate Check"]
+    end
+    VAL --> CONF["📈 Confidence Score 0.0–1.0"]
+    CONF --> CLASS["🏷️ Classify · 10 Mongolian categories"]
+    CLASS --> DEC{⚖️ Decision}
+    DEC -->|issues found| DENY["❌ DENY"]
+    DEC -->|confidence < 0.6| HUMAN["⚠️ HUMAN APPROVAL"]
+    DEC -->|all clear| AUTO["✅ AUTO POST"]
+    DENY & HUMAN & AUTO --> QA["💬 Q&A Agent · Claude API analytics"]
+```
+
+> See [architecture.md](architecture.md) for the full detailed diagram and [n8n_workflow.json](n8n_workflow.json) to import into n8n.
+
+### Steps
+
 ```
 Invoice (JPG/PNG/PDF)
         │
