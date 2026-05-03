@@ -170,142 +170,150 @@ def extract_invoice_data(client, filepath):
 # ============================================================
 
 def validate_invoice(extracted, master_db):
-    """Run all validation checks on extracted invoice data."""
+    """Run all validation checks and return (issues, vendor_match, reasoning)."""
     issues = []
-    
-    # --- 5a. AMOUNT MISMATCH ---
-    if extracted.get("line_items"):
-        for i, item in enumerate(extracted["line_items"]):
-            qty = item.get("quantity", 0) or 0
-            unit_price = item.get("unit_price", 0) or 0
-            total = item.get("total", 0) or 0
-            expected = qty * unit_price
-            if expected != 0 and total != 0 and expected != total:
-                issues.append({
-                    "type": "AMOUNT_MISMATCH",
-                    "detail": f"Line {i+1}: {qty} × {unit_price} = {expected}, but invoice shows {total}"
-                })
-        
-        # Check grand total
-        line_sum = sum(item.get("total", 0) or 0 for item in extracted["line_items"])
-        grand_total = extracted.get("grand_total", 0) or 0
-        if line_sum != 0 and grand_total != 0 and line_sum != grand_total:
-            issues.append({
-                "type": "AMOUNT_MISMATCH",
-                "detail": f"Sum of lines ({line_sum}) ≠ grand total ({grand_total})"
-            })
-    
-    # --- 5b. UNREGISTERED VENDOR ---
+    reasoning = {}
+
+    # --- AMOUNT MISMATCH ---
+    line_items = extracted.get("line_items") or []
+    grand_total = extracted.get("grand_total", 0) or 0
+    line_checks = []
+    line_sum = 0
+    for i, item in enumerate(line_items):
+        qty = item.get("quantity", 0) or 0
+        unit_price = item.get("unit_price", 0) or 0
+        total = item.get("total", 0) or 0
+        expected = qty * unit_price
+        line_sum += total
+        passed = not (expected != 0 and total != 0 and expected != total)
+        line_checks.append({
+            "line": i + 1,
+            "description": item.get("description", ""),
+            "qty": qty, "unit_price": unit_price,
+            "calculated": expected, "invoice_total": total,
+            "passed": passed
+        })
+        if not passed:
+            issues.append({"type": "AMOUNT_MISMATCH",
+                           "detail": f"Line {i+1}: {qty}×{unit_price}={expected}, invoice shows {total}"})
+    grand_total_passed = not (line_sum != 0 and grand_total != 0 and line_sum != grand_total)
+    if not grand_total_passed:
+        issues.append({"type": "AMOUNT_MISMATCH",
+                       "detail": f"Sum of lines ({line_sum}) ≠ grand total ({grand_total})"})
+    reasoning["amount_check"] = {
+        "line_items": line_checks,
+        "line_sum": line_sum,
+        "grand_total": grand_total,
+        "grand_total_match": grand_total_passed,
+        "passed": grand_total_passed and all(c["passed"] for c in line_checks)
+    }
+
+    # --- UNREGISTERED VENDOR ---
     vendor_name = (extracted.get("vendor_name") or "").strip()
     vendor_match = None
     for v in master_db["vendors"]:
-        # Flexible matching: normalize spaces, case-insensitive
         db_name = v["Name"].strip()
         if vendor_name.lower() == db_name.lower():
             vendor_match = v
             break
-        # Handle OCR variations like "Демо Компани - 7" vs "Демо Компани-7"
-        norm_vendor = re.sub(r'\s*[-–—]\s*', '-', vendor_name.lower())
+        norm_v = re.sub(r'\s*[-–—]\s*', '-', vendor_name.lower())
         norm_db = re.sub(r'\s*[-–—]\s*', '-', db_name.lower())
-        if norm_vendor == norm_db:
+        if norm_v == norm_db:
             vendor_match = v
             break
-    
+    reasoning["vendor_check"] = {
+        "invoice_vendor": vendor_name,
+        "matched_vendor": vendor_match["Name"] if vendor_match else None,
+        "registered_vendors_count": len(master_db["vendors"]),
+        "passed": vendor_match is not None
+    }
     if not vendor_match:
-        issues.append({
-            "type": "UNREGISTERED_VENDOR",
-            "detail": f"Vendor '{vendor_name}' not found in master database"
-        })
-    
-    # --- 5c. BANK ACCOUNT MISMATCH ---
+        issues.append({"type": "UNREGISTERED_VENDOR",
+                       "detail": f"Vendor '{vendor_name}' not found in master database"})
+
+    # --- BANK ACCOUNT MISMATCH ---
+    def normalize_bank(name):
+        name = re.sub(r'\s+', ' ', name.lower().strip())
+        return name.replace('demo', 'демо').replace('bank', 'банк')
+
     if vendor_match:
         inv_bank = (extracted.get("bank_name") or "").strip()
         inv_account = (extracted.get("account_number") or "").strip()
         db_bank = vendor_match["Bank"].strip()
         db_account = vendor_match["Account"].strip()
-        
-        # Normalize bank names for comparison
-        def normalize_bank(name):
-            name = name.lower().strip()
-            name = re.sub(r'\s+', ' ', name)
-            # Handle "Demo bank 2" vs "Демо Банк 2"
-            name = name.replace('demo', 'демо').replace('bank', 'банк')
-            return name
-        
-        if inv_bank and normalize_bank(inv_bank) != normalize_bank(db_bank):
-            issues.append({
-                "type": "BANK_ACCOUNT_MISMATCH",
-                "detail": f"Bank mismatch: invoice='{inv_bank}', DB='{db_bank}'"
-            })
-        
-        if inv_account and inv_account != db_account:
-            issues.append({
-                "type": "BANK_ACCOUNT_MISMATCH",
-                "detail": f"Account mismatch: invoice='{inv_account}', DB='{db_account}'"
-            })
-    
-    # --- 5d. INVALID DATE ---
+        bank_match = (not inv_bank) or normalize_bank(inv_bank) == normalize_bank(db_bank)
+        account_match = (not inv_account) or inv_account == db_account
+        reasoning["bank_check"] = {
+            "invoice_bank": inv_bank, "db_bank": db_bank, "bank_match": bank_match,
+            "invoice_account": inv_account, "db_account": db_account, "account_match": account_match,
+            "passed": bank_match and account_match
+        }
+        if not bank_match:
+            issues.append({"type": "BANK_ACCOUNT_MISMATCH",
+                           "detail": f"Bank mismatch: invoice='{inv_bank}', DB='{db_bank}'"})
+        if not account_match:
+            issues.append({"type": "BANK_ACCOUNT_MISMATCH",
+                           "detail": f"Account mismatch: invoice='{inv_account}', DB='{db_account}'"})
+    else:
+        reasoning["bank_check"] = {"passed": None, "note": "Skipped — vendor not registered"}
+
+    # --- INVALID DATE ---
     def parse_date(date_str):
         if not date_str:
             return None
-        date_str = date_str.strip().replace('/', '-')
         try:
-            return datetime.strptime(date_str, '%Y-%m-%d')
+            return datetime.strptime(date_str.strip().replace('/', '-'), '%Y-%m-%d')
         except:
             return None
-    
-    inv_date = parse_date(extracted.get("invoice_date"))
-    due_date = parse_date(extracted.get("due_date"))
-    
-    if extracted.get("invoice_date") and not inv_date:
-        issues.append({
-            "type": "INVALID_DATE",
-            "detail": f"Cannot parse invoice date: '{extracted.get('invoice_date')}'"
-        })
-    
-    if extracted.get("due_date") and not due_date:
-        issues.append({
-            "type": "INVALID_DATE",
-            "detail": f"Cannot parse due date: '{extracted.get('due_date')}'"
-        })
-    
+
+    raw_inv_date = extracted.get("invoice_date")
+    raw_due_date = extracted.get("due_date")
+    inv_date = parse_date(raw_inv_date)
+    due_date = parse_date(raw_due_date)
+    date_issues = []
+    if raw_inv_date and not inv_date:
+        date_issues.append(f"Cannot parse invoice date: '{raw_inv_date}'")
+        issues.append({"type": "INVALID_DATE", "detail": date_issues[-1]})
+    if raw_due_date and not due_date:
+        date_issues.append(f"Cannot parse due date: '{raw_due_date}'")
+        issues.append({"type": "INVALID_DATE", "detail": date_issues[-1]})
     if inv_date and due_date and due_date < inv_date:
-        issues.append({
-            "type": "INVALID_DATE",
-            "detail": f"Due date ({due_date.date()}) is before invoice date ({inv_date.date()})"
-        })
-    
-    # Check for unreasonably far future or past dates
+        date_issues.append(f"Due date ({due_date.date()}) is before invoice date ({inv_date.date()})")
+        issues.append({"type": "INVALID_DATE", "detail": date_issues[-1]})
     now = datetime(2026, 4, 29)
-    if inv_date:
-        if inv_date.year < 2020 or inv_date > now + __import__('datetime').timedelta(days=365):
-            issues.append({
-                "type": "INVALID_DATE",
-                "detail": f"Invoice date {inv_date.date()} seems unreasonable"
-            })
-    
-    # --- 5e. DUPLICATE CHECK ---
-    inv_number = extracted.get("invoice_number")
-    grand_total = extracted.get("grand_total", 0) or 0
-    
+    if inv_date and (inv_date.year < 2020 or inv_date > now + __import__('datetime').timedelta(days=365)):
+        date_issues.append(f"Invoice date {inv_date.date()} is outside reasonable range")
+        issues.append({"type": "INVALID_DATE", "detail": date_issues[-1]})
+    reasoning["date_check"] = {
+        "invoice_date": raw_inv_date, "invoice_date_parsed": str(inv_date.date()) if inv_date else None,
+        "due_date": raw_due_date, "due_date_parsed": str(due_date.date()) if due_date else None,
+        "due_after_invoice": (due_date >= inv_date) if (inv_date and due_date) else None,
+        "issues_found": date_issues,
+        "passed": len(date_issues) == 0
+    }
+
+    # --- DUPLICATE ---
+    inv_date_str = (raw_inv_date or "").replace("/", "-")
+    duplicate_match = None
     for hist in master_db["historical_invoices"]:
-        # Check by vendor + date + total combination
         hist_vendor = (hist.get("VendorName") or "").strip().lower()
         hist_date = (hist.get("InvoiceDate") or "").strip()
         hist_total = hist.get("GrandTotal", 0) or 0
-        
-        if (vendor_name.lower() == hist_vendor and 
-            grand_total != 0 and grand_total == hist_total):
-            # Check date similarity
-            inv_date_str = (extracted.get("invoice_date") or "").replace("/", "-")
-            if inv_date_str == hist_date:
-                issues.append({
-                    "type": "DUPLICATE",
-                    "detail": f"Matches historical invoice ID={hist['ID']}: same vendor, date, total"
-                })
-                break
-    
-    return issues, vendor_match
+        if vendor_name.lower() == hist_vendor and grand_total != 0 and grand_total == hist_total and inv_date_str == hist_date:
+            duplicate_match = {"historical_id": hist["ID"], "vendor": hist_vendor,
+                               "date": hist_date, "total": hist_total}
+            issues.append({"type": "DUPLICATE",
+                           "detail": f"Matches historical invoice ID={hist['ID']}: same vendor, date, total"})
+            break
+    reasoning["duplicate_check"] = {
+        "checked_against": len(master_db["historical_invoices"]),
+        "lookup_key": f"vendor={vendor_name} | date={inv_date_str} | total={grand_total}",
+        "match_found": duplicate_match is not None,
+        "matched_record": duplicate_match,
+        "passed": duplicate_match is None
+    }
+
+    return issues, vendor_match, reasoning
 
 
 # ============================================================
@@ -504,11 +512,11 @@ def process_single_invoice(client, filepath, master_db):
         }
     
     # Step 2: Validate
-    issues, vendor_match = validate_invoice(extracted, master_db)
-    
+    issues, vendor_match, reasoning = validate_invoice(extracted, master_db)
+
     # Step 3: Classify
     category_name, category_id = classify_invoice(extracted, master_db, vendor_match)
-    
+
     # Step 4: Decide
     confidence = compute_confidence(extracted)
     decision, reasons = make_decision(extracted, issues, vendor_match, master_db)
@@ -529,7 +537,8 @@ def process_single_invoice(client, filepath, master_db):
         "confidence": confidence,
         "issues": issues,
         "decision": decision,
-        "decision_reasons": reasons
+        "decision_reasons": reasons,
+        "reasoning": reasoning
     }
     
     print(f"    → {decision} | {category_name} | Issues: {len(issues)}")
