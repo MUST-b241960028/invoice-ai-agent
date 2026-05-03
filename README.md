@@ -27,7 +27,6 @@ flowchart TD
     DENY & HUMAN & AUTO --> QA["💬 Q&A Agent · Claude API analytics"]
 ```
 
-> See [architecture.md](architecture.md) for the full detailed diagram and [n8n_workflow.json](n8n_workflow.json) to import into n8n.
 
 ### Steps
 
