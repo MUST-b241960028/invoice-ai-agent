@@ -423,47 +423,59 @@ def _fuzzy_match(s1, s2):
 
 
 # ============================================================
-# 7. DECISION FUNCTION
+# 7. CONFIDENCE SCORING
+# ============================================================
+
+def compute_confidence(extracted):
+    """
+    Compute extraction confidence 0.0–1.0 based on completeness of key fields.
+    Invoices with low confidence are routed to HUMAN_APPROVAL rather than AUTO_POST.
+    """
+    score = 1.0
+    key_fields = ["vendor_name", "invoice_date", "grand_total", "account_number", "bank_name"]
+    missing = sum(1 for f in key_fields if not extracted.get(f))
+    score -= missing * 0.15
+    if not extracted.get("line_items"):
+        score -= 0.20
+    return max(0.1, min(1.0, round(score, 2)))
+
+
+# ============================================================
+# 8. DECISION FUNCTION
 # ============================================================
 
 def make_decision(extracted, issues, vendor_match, master_db):
     """
     Make final business decision:
-    - AUTO_POST: Known vendor, no issues, matches historical pattern
-    - HUMAN_APPROVAL: New but valid invoice, minor concerns
-    - DENY: Has errors, suspicious data, rule violations
+    - AUTO_POST: Known vendor, no issues, high confidence, historical match
+    - HUMAN_APPROVAL: Valid but low confidence, new vendor, or incomplete fields
+    - DENY: Critical errors found (amount mismatch, bank mismatch, invalid date, duplicate, unregistered vendor)
     """
-    
-    # DENY conditions
+    # DENY: critical validation failures
     deny_types = {"AMOUNT_MISMATCH", "INVALID_DATE", "BANK_ACCOUNT_MISMATCH", "DUPLICATE"}
     critical_issues = [i for i in issues if i["type"] in deny_types]
-    
     if critical_issues:
-        reasons = [f"{i['type']}: {i['detail']}" for i in critical_issues]
-        return "DENY", reasons
-    
-    # UNREGISTERED_VENDOR → DENY
+        return "DENY", [f"{i['type']}: {i['detail']}" for i in critical_issues]
+
     if any(i["type"] == "UNREGISTERED_VENDOR" for i in issues):
         return "DENY", ["UNREGISTERED_VENDOR: Vendor not in master database"]
-    
-    # AUTO_POST conditions: registered vendor, no issues, has historical match
+
+    # Confidence check — low confidence → HUMAN_APPROVAL
+    confidence = compute_confidence(extracted)
+    if confidence < 0.6:
+        return "HUMAN_APPROVAL", [f"Low extraction confidence ({confidence:.2f}): key fields missing, manual review required"]
+
+    # AUTO_POST: registered vendor, clean validation, has history, high confidence
     if vendor_match and len(issues) == 0:
-        vendor_name = vendor_match["Name"]
-        grand_total = extracted.get("grand_total", 0) or 0
-        
-        # Check if similar invoice pattern exists in history
-        has_history = False
-        for hist in master_db["historical_invoices"]:
-            if hist.get("VendorName", "").strip() == vendor_name:
-                has_history = True
-                break
-        
+        has_history = any(
+            h.get("VendorName", "").strip() == vendor_match["Name"]
+            for h in master_db["historical_invoices"]
+        )
         if has_history:
-            return "AUTO_POST", ["Registered vendor with clean history, no issues detected"]
+            return "AUTO_POST", [f"Registered vendor, all checks passed, confidence={confidence:.2f}"]
         else:
-            return "HUMAN_APPROVAL", ["Registered vendor but no historical invoices found"]
-    
-    # Default: HUMAN_APPROVAL
+            return "HUMAN_APPROVAL", ["Registered vendor but no historical invoices — new relationship"]
+
     return "HUMAN_APPROVAL", ["Requires manual review"]
 
 
@@ -486,8 +498,9 @@ def process_single_invoice(client, filepath, master_db):
             "extracted": {},
             "issues": [{"type": "EXTRACTION_ERROR", "detail": str(e)}],
             "category": "Unknown",
-            "decision": "DENY",
-            "decision_reasons": [f"Failed to extract: {e}"]
+            "confidence": 0.0,
+            "decision": "HUMAN_APPROVAL",
+            "decision_reasons": [f"Extraction failed — manual review required: {e}"]
         }
     
     # Step 2: Validate
@@ -497,8 +510,9 @@ def process_single_invoice(client, filepath, master_db):
     category_name, category_id = classify_invoice(extracted, master_db, vendor_match)
     
     # Step 4: Decide
+    confidence = compute_confidence(extracted)
     decision, reasons = make_decision(extracted, issues, vendor_match, master_db)
-    
+
     result = {
         "filename": filename,
         "invoice_number": extracted.get("invoice_number"),
@@ -512,6 +526,7 @@ def process_single_invoice(client, filepath, master_db):
         "grand_total": extracted.get("grand_total"),
         "category": category_name,
         "category_id": category_id,
+        "confidence": confidence,
         "issues": issues,
         "decision": decision,
         "decision_reasons": reasons
