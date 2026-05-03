@@ -1,121 +1,118 @@
-# Smart Invoice Agent — AI Legends 2026
+# Ухаалаг Нэхэмжлэхийн Агент — AI Legends 2026
 
-AI-powered invoice processing agent that extracts, validates, classifies, and makes decisions on Mongolian financial invoices using Claude Vision API.
+Claude Vision API ашиглан Монгол санхүүгийн нэхэмжлэхийг автоматаар уншиж, баталгаажуулж, ангилаад, шийдвэр гаргадаг AI агент.
 
-## Pipeline Architecture
+## Pipeline-ийн архитектур
 
 ```mermaid
 flowchart TD
-    INPUT["📂 Invoice Input · JPG / PNG / PDF"]
-    INPUT --> SPLIT{File Type?}
-    SPLIT -->|PDF| PDF["🔧 PyMuPDF · Render → PNG 200 DPI"]
-    SPLIT -->|Image| IMG["🖼️ Base64 Encode"]
+    INPUT["📂 Нэхэмжлэх оруулах · JPG / PNG / PDF"]
+    INPUT --> SPLIT{Файлын төрөл?}
+    SPLIT -->|PDF| PDF["🔧 PyMuPDF · PNG 200 DPI болгох"]
+    SPLIT -->|Зураг| IMG["🖼️ Base64 кодлох"]
     PDF --> VISION["🤖 Claude Sonnet 4 Vision API"]
     IMG --> VISION
-    VISION --> JSON["📋 Structured JSON\nvendor · bank · dates · line items · total"]
+    VISION --> JSON["📋 Бүтэцлэгдсэн JSON\nнийлүүлэгч · банк · огноо · бараа · дүн"]
     JSON --> VAL
-    DB[("🗄️ Master DB\n10 vendors · 10 categories\n50 items · 596 history")] --> VAL
-    subgraph VAL["⚙️ Validation + Reasoning Trace"]
-        V1["💰 Amount Check"] & V2["🏢 Vendor Check"] & V3["🏦 Bank Check"] & V4["📅 Date Check"] & V5["🔁 Duplicate Check"]
+    DB[("🗄️ Мастер DB\n10 нийлүүлэгч · 10 ангилал\n50 бараа · 596 түүх")] --> VAL
+    subgraph VAL["⚙️ Баталгаажуулалт + Шалгалтын мөр"]
+        V1["💰 Дүнгийн шалгалт"] & V2["🏢 Нийлүүлэгчийн шалгалт"] & V3["🏦 Банкны шалгалт"] & V4["📅 Огнооны шалгалт"] & V5["🔁 Давхардалын шалгалт"]
     end
-    VAL --> CONF["📈 Confidence Score 0.0–1.0"]
-    CONF --> CLASS["🏷️ Classify · 10 Mongolian categories"]
-    CLASS --> DEC{⚖️ Decision}
-    DEC -->|issues found| DENY["❌ DENY"]
-    DEC -->|confidence < 0.6| HUMAN["⚠️ HUMAN APPROVAL"]
-    DEC -->|all clear| AUTO["✅ AUTO POST"]
-    DENY & HUMAN & AUTO --> QA["💬 Q&A Agent · Claude API analytics"]
+    VAL --> CONF["📈 Итгэлцэлийн оноо 0.0–1.0"]
+    CONF --> CLASS["🏷️ Ангилал · 10 санхүүгийн ангилал"]
+    CLASS --> DEC{⚖️ Шийдвэр}
+    DEC -->|зөрчил илэрсэн| DENY["❌ ТАТГАЛЗАХ"]
+    DEC -->|итгэлцэл < 0.6| HUMAN["⚠️ ХҮНИЙ ЗӨВШӨӨРӨЛ"]
+    DEC -->|бүх шалгалт давсан| AUTO["✅ АВТОМАТ БҮРТГЭЛ"]
+    DENY & HUMAN & AUTO --> QA["💬 Асуулт хариулт агент · Claude API"]
 ```
 
-
-### Steps
+### Алхамууд
 
 ```
-Invoice (JPG/PNG/PDF)
+Нэхэмжлэх (JPG/PNG/PDF)
         │
         ▼
-  1. EXTRACT    ← Claude Vision API → structured JSON
+  1. МЭДЭЭЛЭЛ ОЛБОРЛОХ   ← Claude Vision API → бүтэцлэгдсэн JSON
         │
         ▼
-  2. VALIDATE   ← 5 checks against SQLite master DB
+  2. БАТАЛГААЖУУЛАХ      ← SQLite мастер мэдээллийн сан дахь 5 шалгалт
         │
         ▼
-  3. CLASSIFY   ← 10 financial categories
+  3. АНГИЛАХ             ← 10 санхүүгийн ангилал
         │
         ▼
-  4. DECIDE     ← AUTO_POST / HUMAN_APPROVAL / DENY
+  4. ШИЙДВЭР ГАРГАХ     ← АВТОМАТ БҮРТГЭЛ / ХҮНИЙ ЗӨВШӨӨРӨЛ / ТАТГАЛЗАХ
         │
         ▼
-  5. Q&A        ← Aggregate analytics via Claude API
+  5. АСУУЛТ ХАРИУЛТ     ← Claude API-аар нэгтгэсэн дүн шинжилгээ
 ```
 
-## Validation Checks
+## Баталгаажуулалтын шалгалтууд
 
-| Check | Description |
-|-------|-------------|
-| `AMOUNT_MISMATCH` | qty × unit_price ≠ line total, or sum ≠ grand_total |
-| `UNREGISTERED_VENDOR` | Vendor not in master database |
-| `BANK_ACCOUNT_MISMATCH` | Bank/account doesn't match vendor record |
-| `INVALID_DATE` | Unparseable date, Feb-30, or due < invoice date |
-| `DUPLICATE` | Same vendor + date + total in historical data |
+| Шалгалт | Тайлбар |
+|---------|---------|
+| `AMOUNT_MISMATCH` | тоо × нэгжийн үнэ ≠ мөрийн дүн, эсвэл нийлбэр ≠ нийт дүн |
+| `UNREGISTERED_VENDOR` | Нийлүүлэгч мастер мэдээллийн санд байхгүй |
+| `BANK_ACCOUNT_MISMATCH` | Банк/данс нийлүүлэгчийн бүртгэлтэй таарахгүй |
+| `INVALID_DATE` | Задлах боломжгүй огноо, 2-р сарын 30, эсвэл төлбөрийн огноо нэхэмжлэхийн өмнө |
+| `DUPLICATE` | Түүхэн мэдээлэлд ижил нийлүүлэгч + огноо + дүн байна |
 
-## Results (100 Invoices Processed)
+## Үр дүн (100 нэхэмжлэх боловсруулсан)
 
-| Decision | Count |
-|----------|-------|
-| AUTO_POST | 72 |
-| DENY | 28 |
-| HUMAN_APPROVAL | 0 |
+| Шийдвэр | Тоо |
+|---------|-----|
+| Автомат бүртгэл | 72 |
+| Татгалзсан | 28 |
+| Хүний зөвшөөрөл | 0 |
 
-| Issue Type | Count | Invoice Numbers |
-|------------|-------|-----------------|
-| BANK_ACCOUNT_MISMATCH | 8 | 002, 003, 013, 015, 039, 053, 056, 075 |
-| AMOUNT_MISMATCH | 5 | 007, 028, 064, 080, 094 |
-| INVALID_DATE | 5 | 005, 022, 034, 066, 087 |
-| UNREGISTERED_VENDOR | 5 | 010, 026, 041, 088, 092 |
-| DUPLICATE | 5 | 025, 035, 038, 047, 057 |
+| Зөрчлийн төрөл | Тоо | Нэхэмжлэхийн дугаар |
+|----------------|-----|---------------------|
+| Банкны дансны зөрүү | 8 | 002, 003, 013, 015, 039, 053, 056, 075 |
+| Дүнгийн зөрүү | 5 | 007, 028, 064, 080, 094 |
+| Буруу огноо | 5 | 005, 022, 034, 066, 087 |
+| Бүртгэлгүй нийлүүлэгч | 5 | 010, 026, 041, 088, 092 |
+| Давхардсан нэхэмжлэх | 5 | 025, 035, 038, 047, 057 |
 
-- Total amount: **66,110,000₮**
-- Denied amount: **28,210,000₮**
-- File types: JPG handwritten (15), PNG digital (4), PDF digital (81)
+- Нийт дүн: **66,110,000₮**
+- Татгалзсан дүн: **28,210,000₮**
+- Файлын төрөл: JPG гар бичмэл (15), PNG дижитал (4), PDF дижитал (81)
 
-## Setup
+## Тохиргоо
 
 ```bash
 pip install -r requirements.txt
 export ANTHROPIC_API_KEY="sk-ant-..."
 ```
 
-## Run Pipeline
+## Pipeline ажиллуулах
 
 ```bash
 python pipeline.py
 ```
 
-## Run Streamlit Demo
+## Streamlit демо ажиллуулах
 
 ```bash
 streamlit run app.py
 ```
 
-## Tech Stack
+## Технологийн стек
 
-- **Claude Sonnet 4** — Vision extraction + Q&A reasoning
-- **PyMuPDF** — PDF page rendering
-- **SQLite** — Master vendor/items/history database
-- **Streamlit** — Interactive demo UI
-- **React/JSX** — Chatbot interface (`invoice_agent_chatbot.jsx`)
+- **Claude Sonnet 4** — Vision олборлолт + асуулт хариулт
+- **PyMuPDF** — PDF хуудас зураг болгох
+- **SQLite** — Нийлүүлэгч/бараа/түүхийн мастер мэдээллийн сан
+- **Streamlit** — Интерактив демо интерфэйс
 
-## Files
+## Файлууд
 
-| File | Description |
-|------|-------------|
-| `pipeline.py` | Core 5-step processing pipeline |
-| `app.py` | Streamlit demo application |
-| `invoice_agent_chatbot.jsx` | React chatbot component |
-| `requirements.txt` | Python dependencies |
+| Файл | Тайлбар |
+|------|---------|
+| `pipeline.py` | 5 алхамт боловсруулалтын pipeline |
+| `app.py` | Streamlit демо програм |
+| `requirements.txt` | Python хамааралтай сангууд |
 
-## Competition
+## Уралдаан
 
-AI Legends 2026 — AI Agent Automation Track
-Organized by Prof. D.Zolzaya, MUST
+AI Legends 2026 — AI Агент Автоматжуулалтын Чиглэл
+Зохион байгуулагч: Проф. Д.Золзаяа, ШУТИС
