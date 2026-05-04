@@ -3164,29 +3164,218 @@
       "decision_reasons": [
         "Registered vendor, all checks passed"
       ]
+    },
+    {
+      "invoice_number": "100",
+      "vendor_name": "Демо Компани-10",
+      "bank_name": "Демо Банк 1",
+      "account_number": "1002233445",
+      "email": "logistics@demo10.mn",
+      "invoice_date": "2026-03-28",
+      "due_date": "2026-04-12",
+      "line_items": [
+        {
+          "description": "Монитор",
+          "quantity": 1,
+          "unit_price": 280000,
+          "total": 280000
+        },
+        {
+          "description": "Принтер",
+          "quantity": 1,
+          "unit_price": 320000,
+          "total": 320000
+        }
+      ],
+      "grand_total": 600000,
+      "filename": "invoice_100.pdf",
+      "category": "Тээвэр, логистик",
+      "decision": "AUTO_POST",
+      "issues": [],
+      "file_type": "PDF",
+      "is_handwritten": false,
+      "decision_reasons": [
+        "Registered vendor, all checks passed"
+      ]
+    },
+    {
+      "invoice_number": "099",
+      "vendor_name": "Демо Компани-3",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4001122334",
+      "email": "accounts@demo3.mn",
+      "invoice_date": "2026-03-29",
+      "due_date": "2026-04-13",
+      "line_items": [
+        {
+          "description": "Монитор",
+          "quantity": 4,
+          "unit_price": 280000,
+          "total": 1120000
+        }
+      ],
+      "grand_total": 1120000,
+      "filename": "invoice_099.pdf",
+      "category": "Мэдээллийн технологийн зардал",
+      "decision": "AUTO_POST",
+      "issues": [],
+      "file_type": "PDF",
+      "is_handwritten": false,
+      "decision_reasons": [
+        "Registered vendor, all checks passed"
+      ]
+    },
+    {
+      "invoice_number": "098",
+      "vendor_name": "Демо Компани-4",
+      "bank_name": "Демо Банк 2",
+      "account_number": "5007788990",
+      "email": "invoicing@demo4.mn",
+      "invoice_date": "2025-10-13",
+      "due_date": "2025-10-28",
+      "line_items": [
+        {
+          "description": "Интернет (Шилэн кабель, сарын)",
+          "quantity": 1,
+          "unit_price": 150000,
+          "total": 150000
+        }
+      ],
+      "grand_total": 150000,
+      "filename": "invoice_098.png",
+      "category": "Мэдээллийн технологийн зардал",
+      "decision": "DENY",
+      "issues": [
+        {
+          "type": "DUPLICATE",
+          "detail": "Matches historical ID=33"
+        }
+      ],
+      "file_type": "PNG",
+      "is_handwritten": false,
+      "decision_reasons": [
+        "Matches historical ID=33"
+      ]
+    },
+    {
+      "invoice_number": "097",
+      "vendor_name": "Демо Компани-4",
+      "bank_name": "Демо Банк 2",
+      "account_number": "5007788990",
+      "email": "invoicing@demo4.mn",
+      "invoice_date": "2026-03-08",
+      "due_date": "2026-03-23",
+      "line_items": [
+        {
+          "description": "Тагт, цонх засвар",
+          "quantity": 1,
+          "unit_price": 85000,
+          "total": 85000
+        },
+        {
+          "description": "Хаалга, цоож засвар",
+          "quantity": 2,
+          "unit_price": 65000,
+          "total": 130000
+        }
+      ],
+      "grand_total": 155000,
+      "filename": "invoice_097.pdf",
+      "category": "Мэдээллийн технологийн зардал",
+      "decision": "DENY",
+      "issues": [
+        {
+          "type": "AMOUNT_MISMATCH",
+          "detail": "Sum 215,000 ≠ total 155,000"
+        }
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false,
+      "decision_reasons": [
+        "Sum 215,000 ≠ total 155,000"
+      ]
+    },
+    {
+      "invoice_number": "096",
+      "vendor_name": "Демо Компани-3",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4001122334",
+      "email": "accounts@demo3.mn",
+      "invoice_date": "2025-08-06",
+      "due_date": "2025-08-21",
+      "line_items": [
+        {
+          "description": "Кибер аюулгүй байдал аудит (сарын)",
+          "quantity": 1,
+          "unit_price": 350000,
+          "total": 350000
+        }
+      ],
+      "grand_total": 350000,
+      "filename": "invoice_096.png",
+      "category": "Мэдээллийн технологийн зардал",
+      "decision": "DENY",
+      "issues": [
+        {
+          "type": "DUPLICATE",
+          "detail": "Matches historical ID=414"
+        }
+      ],
+      "file_type": "PNG",
+      "is_handwritten": false,
+      "decision_reasons": [
+        "Matches historical ID=414"
+      ]
+    },
+    {
+      "invoice_number": "095",
+      "vendor_name": "Демо Компани-10",
+      "bank_name": "Демо Банк 1",
+      "account_number": "1002233445",
+      "email": "logistics@demo10.mn",
+      "invoice_date": "2026-04-06",
+      "due_date": "2026-04-21",
+      "line_items": [
+        {
+          "description": "GPS трекер үйлчилгээ (сарын)",
+          "quantity": 1,
+          "unit_price": 85000,
+          "total": 85000
+        }
+      ],
+      "grand_total": 85000,
+      "filename": "invoice_095.png",
+      "category": "Тээвэр, логистик",
+      "decision": "AUTO_POST",
+      "issues": [],
+      "file_type": "PNG",
+      "is_handwritten": false,
+      "decision_reasons": [
+        "Registered vendor, all checks passed"
+      ]
     }
   ],
   "summary": {
-    "total_invoices": 101,
-    "auto_post_count": 73,
+    "total_invoices": 107,
+    "auto_post_count": 76,
     "human_approval_count": 0,
-    "deny_count": 28,
+    "deny_count": 31,
     "issue_breakdown": {
       "BANK_ACCOUNT_MISMATCH": 8,
       "INVALID_DATE": 5,
-      "AMOUNT_MISMATCH": 5,
+      "AMOUNT_MISMATCH": 6,
       "UNREGISTERED_VENDOR": 5,
-      "DUPLICATE": 5
+      "DUPLICATE": 7
     },
-    "total_amount": 66710000,
-    "denied_amount": 28210000,
+    "total_amount": 69170000,
+    "denied_amount": 28865000,
     "jpg_count": 15,
-    "png_count": 4,
-    "pdf_count": 82,
+    "png_count": 7,
+    "pdf_count": 85,
     "handwritten_count": 15,
-    "duplicate_count": 5,
+    "duplicate_count": 7,
     "unregistered_vendor_count": 5,
-    "amount_mismatch_count": 5,
+    "amount_mismatch_count": 6,
     "bank_mismatch_count": 8,
     "invalid_date_count": 5
   },

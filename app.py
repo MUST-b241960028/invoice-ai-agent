@@ -136,6 +136,7 @@ def compact_results(results):
     compact = []
     for r in results:
         issues = r.get("issues") or []
+        duplicate_issue = next((i for i in issues if issue_type(i) == "DUPLICATE"), None)
         compact.append({
             "filename": r.get("filename"),
             "invoice_number": r.get("invoice_number"),
@@ -155,9 +156,38 @@ def compact_results(results):
             "human_approval_required": r.get("decision") == "HUMAN_APPROVAL",
             "issue_types": [issue_type(i) for i in issues],
             "issue_details": [issue_detail(i) for i in issues],
+            "duplicate_with": duplicate_issue.get("matched_invoice") if duplicate_issue else None,
             "deny_reasons": r.get("decision_reasons") or [issue_detail(i) for i in issues],
         })
     return compact
+
+def normalized_invoice_key(record):
+    vendor = re.sub(r"\s*[-–—]\s*", "-", (record.get("vendor_name") or "").strip().lower())
+    invoice_date = (record.get("invoice_date") or "").replace("/", "-")
+    total = record.get("grand_total") or 0
+    if not vendor or not invoice_date or not total:
+        return None
+    return vendor, invoice_date, total
+
+def find_duplicate_result(extracted):
+    key = normalized_invoice_key(extracted)
+    if not key:
+        return None
+    for existing in st.session_state.get("invoice_results", []):
+        if normalized_invoice_key(existing) == key:
+            return existing
+    return None
+
+def duplicate_match_payload(record):
+    if not record:
+        return None
+    return {
+        "filename": record.get("filename"),
+        "invoice_number": record.get("invoice_number"),
+        "vendor_name": record.get("vendor_name"),
+        "invoice_date": record.get("invoice_date"),
+        "grand_total": record.get("grand_total"),
+    }
 
 def validate(data):
     issues = []
@@ -180,9 +210,23 @@ def validate(data):
     if data.get("invoice_date") and not id_: issues.append({"type":"INVALID_DATE","detail":f"Cannot parse '{data.get('invoice_date')}'"})
     if id_ and dd_ and dd_<id_: issues.append({"type":"INVALID_DATE","detail":"Due date before invoice date"})
     if (data.get("invoice_date") or "").replace("/","-").endswith("02-30"): issues.append({"type":"INVALID_DATE","detail":"Feb 30 does not exist"})
-    for h in master_db["historical_invoices"]:
-        if str(h.get("VendorName","")).strip().lower()==(data.get("vendor_name") or "").strip().lower() and gt and gt==(h.get("GrandTotal") or 0) and (data.get("invoice_date") or "").replace("/","-")==(h.get("InvoiceDate") or ""):
-            issues.append({"type":"DUPLICATE","detail":f"Matches historical ID={h['ID']}"}); break
+    existing_duplicate = find_duplicate_result(data)
+    if existing_duplicate:
+        matched = duplicate_match_payload(existing_duplicate)
+        label = matched.get("filename") or f"invoice #{matched.get('invoice_number')}"
+        issues.append({
+            "type":"DUPLICATE",
+            "detail":f"Өмнө хадгалсан {label} нэхэмжлэхтэй давхцаж байна: vendor + огноо + дүн ижил",
+            "matched_invoice": matched,
+        })
+    else:
+        for h in master_db["historical_invoices"]:
+            if str(h.get("VendorName","")).strip().lower()==(data.get("vendor_name") or "").strip().lower() and gt and gt==(h.get("GrandTotal") or 0) and (data.get("invoice_date") or "").replace("/","-")==(h.get("InvoiceDate") or ""):
+                issues.append({
+                    "type":"DUPLICATE",
+                    "detail":f"Мастер DB дахь historical invoice ID={h['ID']} бичлэгтэй давхцаж байна: vendor + огноо + дүн ижил",
+                    "matched_invoice":{"historical_id":h["ID"],"vendor_name":h.get("VendorName"),"invoice_date":h.get("InvoiceDate"),"grand_total":h.get("GrandTotal")},
+                }); break
     deny={"AMOUNT_MISMATCH","BANK_ACCOUNT_MISMATCH","UNREGISTERED_VENDOR","INVALID_DATE","DUPLICATE"}
     decision="DENY" if any(i["type"] in deny for i in issues) else ("AUTO_POST" if vendor else "HUMAN_APPROVAL")
     return issues,decision,vendor
@@ -250,6 +294,7 @@ def ask_agent(question):
 
 def render_invoice_result(record):
     issue_names=", ".join(issue_type(i) for i in record.get("issues",[])) or "Байхгүй"
+    issue_details="\n".join(f"- {issue_type(i)}: {issue_detail(i)}" for i in record.get("issues",[]))
     return f"""**{record.get('filename','uploaded invoice')}**
 
 Vendor: {record.get('vendor_name') or '?'}  
@@ -258,6 +303,7 @@ Vendor: {record.get('vendor_name') or '?'}
 Ангилал: {record.get('category') or '?'}  
 Шийдвэр: **{record.get('decision')}**  
 Алдаа: {issue_names}
+{issue_details}
 """
 
 def process_upload(uploaded_file):
