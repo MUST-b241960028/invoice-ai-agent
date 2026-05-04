@@ -1,0 +1,27 @@
+# Local Python environments and caches
+myenv/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Local app secrets
+.streamlit/secrets.toml
+.env
+.env.*
+
+# OS/editor noise
+.DS_Store
+.idea/
+.vscode/
+
+# Runtime/build artifacts
+.pytest_cache/
+.mypy_cache/
+dist/
+build/
+*.egg-info/
+
+# Duplicate local dataset exports
+dataset/invoice_*
+dataset/master_invoices_database.db

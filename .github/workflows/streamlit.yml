@@ -1,0 +1,71 @@
+name: Streamlit App
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Compile Python files
+        run: python -m py_compile app.py pipeline.py
+
+      - name: Validate bundled demo data
+        run: |
+          python - <<'PY'
+          import json
+          import sqlite3
+          from pathlib import Path
+
+          required = [
+              "app.py",
+              "pipeline.py",
+              "evaluate_eval_agent.py",
+              "requirements.txt",
+              "full_results.json",
+              "invoice_results.csv",
+              "master_invoices_database.db",
+              "dataset/eval_agent/eval_agent/invoice_001.pdf",
+          ]
+          missing = [p for p in required if not Path(p).exists()]
+          if missing:
+              raise SystemExit(f"Missing required files: {missing}")
+
+          data = json.loads(Path("full_results.json").read_text(encoding="utf-8"))
+          assert len(data["results"]) == 100, "Expected 100 demo invoice results"
+          eval_files = list(Path("dataset/eval_agent/eval_agent").glob("invoice_*.*"))
+          assert len(eval_files) == 100, "Expected 100 eval_agent invoices"
+
+          conn = sqlite3.connect("master_invoices_database.db")
+          cur = conn.cursor()
+          for table in ["Vendors", "Items", "InvoiceCategories", "Invoices", "InvoiceLines"]:
+              count = cur.execute(f"select count(*) from {table}").fetchone()[0]
+              assert count > 0, f"{table} is empty"
+          conn.close()
+          PY
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: validate
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t smart-invoice-agent .

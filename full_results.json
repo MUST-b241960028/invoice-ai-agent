@@ -1,0 +1,3174 @@
+{
+  "results": [
+    {
+      "filename": "invoice_001.jpg",
+      "invoice_number": "001",
+      "vendor_name": "Демо Компани-7",
+      "bank_name": "Демо Банк 2",
+      "account_number": "5004455667",
+      "email": "finance@demo7.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Барилга засвар материал",
+          "quantity": 1,
+          "unit_price": 150000,
+          "total": 150000
+        }
+      ],
+      "grand_total": 150000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "JPG",
+      "is_handwritten": true
+    },
+    {
+      "filename": "invoice_002.jpg",
+      "invoice_number": "002",
+      "vendor_name": "Демо Компани-10",
+      "bank_name": "Демо Банк 1",
+      "account_number": "1002033445",
+      "email": "logistic@demo10.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Ачаа тээвэр (олон улс)",
+          "quantity": 1,
+          "unit_price": 2500000,
+          "total": 2500000
+        },
+        {
+          "description": "Гаалийн зардал",
+          "quantity": 1,
+          "unit_price": 420000,
+          "total": 420000
+        }
+      ],
+      "grand_total": 2920000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [
+        {
+          "type": "BANK_ACCOUNT_MISMATCH",
+          "detail": "Account mismatch: invoice='1002033445', DB='1002233445'"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "BANK_ACCOUNT_MISMATCH: Account mismatch: invoice='1002033445', DB='1002233445'"
+      ],
+      "file_type": "JPG",
+      "is_handwritten": true
+    },
+    {
+      "filename": "invoice_003.jpg",
+      "invoice_number": "003",
+      "vendor_name": "Демо Компани-9",
+      "bank_name": "Демо Банк 1",
+      "account_number": "5003321110",
+      "email": "info@demo9.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Ачаа тээвэр (олон улс)",
+          "quantity": 1,
+          "unit_price": 2500000,
+          "total": 2500000
+        },
+        {
+          "description": "Гаалийн зардал",
+          "quantity": 1,
+          "unit_price": 420000,
+          "total": 420000
+        }
+      ],
+      "grand_total": 2920000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [
+        {
+          "type": "BANK_ACCOUNT_MISMATCH",
+          "detail": "Account mismatch: invoice='5003321110', DB='5003322110'"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "BANK_ACCOUNT_MISMATCH: Account mismatch: invoice='5003321110', DB='5003322110'"
+      ],
+      "file_type": "JPG",
+      "is_handwritten": true
+    },
+    {
+      "filename": "invoice_004.jpg",
+      "invoice_number": "004",
+      "vendor_name": "Демо Компани-9",
+      "bank_name": "Демо Банк 1",
+      "account_number": "5003322110",
+      "email": "info@demo9.mn",
+      "invoice_date": "2026-01-30",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Бараа бүртгэлийн систем (сарын)",
+          "quantity": 1,
+          "unit_price": 200000,
+          "total": 200000
+        }
+      ],
+      "grand_total": 200000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "JPG",
+      "is_handwritten": true
+    },
+    {
+      "filename": "invoice_005.jpg",
+      "invoice_number": "005",
+      "vendor_name": "Демо Компани-9",
+      "bank_name": "Демо Банк 1",
+      "account_number": "5003322110",
+      "email": "info@demo9.mn",
+      "invoice_date": "2026-03-01",
+      "due_date": "2026-01-15",
+      "line_items": [
+        {
+          "description": "Техник үйлчилгээ",
+          "quantity": 2,
+          "unit_price": 75000,
+          "total": 150000
+        }
+      ],
+      "grand_total": 150000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [
+        {
+          "type": "INVALID_DATE",
+          "detail": "Due date (2026-01-15) is before invoice date (2026-03-01)"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "INVALID_DATE: Due date (2026-01-15) is before invoice date (2026-03-01)"
+      ],
+      "file_type": "JPG",
+      "is_handwritten": true
+    },
+    {
+      "filename": "invoice_006.jpg",
+      "invoice_number": "006",
+      "vendor_name": "Демо Компани-9",
+      "bank_name": "Демо Банк 1",
+      "account_number": "5003322110",
+      "email": "info@demo9.mn",
+      "invoice_date": "2026-03-15",
+      "due_date": "2026-06-01",
+      "line_items": [
+        {
+          "description": "Тээврийн даатгал (сарын)",
+          "quantity": 1,
+          "unit_price": 150000,
+          "total": 150000
+        }
+      ],
+      "grand_total": 150000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "JPG",
+      "is_handwritten": true
+    },
+    {
+      "filename": "invoice_007.jpg",
+      "invoice_number": "007",
+      "vendor_name": "Демо Компани-8",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4005544332",
+      "email": "billing@demo8.mn",
+      "invoice_date": "2026-03-01",
+      "due_date": "2026-04-01",
+      "line_items": [
+        {
+          "description": "Оффис түрээс (сарын)",
+          "quantity": 1,
+          "unit_price": 2500000,
+          "total": 2500000
+        }
+      ],
+      "grand_total": 2510000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [
+        {
+          "type": "AMOUNT_MISMATCH",
+          "detail": "Sum of lines (2500000) ≠ grand total (2510000)"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "AMOUNT_MISMATCH: Sum of lines (2500000) ≠ grand total (2510000)"
+      ],
+      "file_type": "JPG",
+      "is_handwritten": true
+    },
+    {
+      "filename": "invoice_008.jpg",
+      "invoice_number": "008",
+      "vendor_name": "Демо Компани-7",
+      "bank_name": "Демо Банк 2",
+      "account_number": "5004455667",
+      "email": "finance@demo7.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Сантехникийн засвар",
+          "quantity": 3,
+          "unit_price": 130000,
+          "total": 390000
+        }
+      ],
+      "grand_total": 390000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "JPG",
+      "is_handwritten": true
+    },
+    {
+      "filename": "invoice_009.jpg",
+      "invoice_number": "009",
+      "vendor_name": "Демо Компани-3",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4001122334",
+      "email": "accounts@demo3.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Монитор",
+          "quantity": 1,
+          "unit_price": 280000,
+          "total": 280000
+        }
+      ],
+      "grand_total": 280000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "JPG",
+      "is_handwritten": true
+    },
+    {
+      "filename": "invoice_010.jpg",
+      "invoice_number": "010",
+      "vendor_name": "Демо Компани-12",
+      "bank_name": "Демо Банк 2",
+      "account_number": "8832233944",
+      "email": "contact@demo12.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Барилга засвар материал",
+          "quantity": 2,
+          "unit_price": 150000,
+          "total": 300000
+        }
+      ],
+      "grand_total": 300000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [
+        {
+          "type": "UNREGISTERED_VENDOR",
+          "detail": "Vendor 'Демо Компани-12' not found in master database"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "UNREGISTERED_VENDOR: Vendor not in master database"
+      ],
+      "file_type": "JPG",
+      "is_handwritten": true
+    },
+    {
+      "filename": "invoice_011.jpg",
+      "invoice_number": "011",
+      "vendor_name": "Демо Компани-8",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4005544332",
+      "email": "billing@demo8.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Бараа бүртгэлийн систем (сарын)",
+          "quantity": 1,
+          "unit_price": 200000,
+          "total": 200000
+        }
+      ],
+      "grand_total": 200000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "JPG",
+      "is_handwritten": true
+    },
+    {
+      "filename": "invoice_012.jpg",
+      "invoice_number": "012",
+      "vendor_name": "Демо Компани-3",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4001122334",
+      "email": "accounts@demo3.mn",
+      "invoice_date": "2026-04-15",
+      "due_date": "2026-05-05",
+      "line_items": [
+        {
+          "description": "Интернэт (Шилэн кабель, сарын)",
+          "quantity": 1,
+          "unit_price": 150000,
+          "total": 150000
+        }
+      ],
+      "grand_total": 150000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "JPG",
+      "is_handwritten": true
+    },
+    {
+      "filename": "invoice_013.jpg",
+      "invoice_number": "013",
+      "vendor_name": "Демо Компани-8",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4025544332",
+      "email": "billing@demo8.mn",
+      "invoice_date": "2026-04-30",
+      "due_date": "2026-06-02",
+      "line_items": [
+        {
+          "description": "Форклифт түрээс (сарын)",
+          "quantity": 1,
+          "unit_price": 550000,
+          "total": 550000
+        }
+      ],
+      "grand_total": 550000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [
+        {
+          "type": "BANK_ACCOUNT_MISMATCH",
+          "detail": "Account mismatch: invoice='4025544332', DB='4005544332'"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "BANK_ACCOUNT_MISMATCH: Account mismatch: invoice='4025544332', DB='4005544332'"
+      ],
+      "file_type": "JPG",
+      "is_handwritten": true
+    },
+    {
+      "filename": "invoice_014.jpg",
+      "invoice_number": "014",
+      "vendor_name": "Демо Компани-5",
+      "bank_name": "Демо Банк 2",
+      "account_number": "1009900880",
+      "email": "info@demo5.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Дээврийн засвар",
+          "quantity": 1,
+          "unit_price": 350000,
+          "total": 350000
+        }
+      ],
+      "grand_total": 350000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "JPG",
+      "is_handwritten": true
+    },
+    {
+      "filename": "invoice_015.jpg",
+      "invoice_number": "015",
+      "vendor_name": "Демо Компани-8",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4005544584",
+      "email": "billing@demo8.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Хүргэлтийн үйлчилгээ",
+          "quantity": 3,
+          "unit_price": 95000,
+          "total": 285000
+        }
+      ],
+      "grand_total": 285000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [
+        {
+          "type": "BANK_ACCOUNT_MISMATCH",
+          "detail": "Account mismatch: invoice='4005544584', DB='4005544332'"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "BANK_ACCOUNT_MISMATCH: Account mismatch: invoice='4005544584', DB='4005544332'"
+      ],
+      "file_type": "JPG",
+      "is_handwritten": true
+    },
+    {
+      "filename": "invoice_016.pdf",
+      "invoice_number": "16",
+      "vendor_name": "Демо Компани-2",
+      "bank_name": "Демо Банк 1",
+      "account_number": "1102003004",
+      "email": "billing@demo2.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Кибер аюулгүй байдал аудит (сарын)",
+          "quantity": 1,
+          "unit_price": 350000,
+          "total": 350000
+        }
+      ],
+      "grand_total": 350000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_017.png",
+      "invoice_number": "017",
+      "vendor_name": "Демо Компани-9",
+      "bank_name": "Демо Банк 1",
+      "account_number": "5003322110",
+      "email": "info@demo9.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Хүргэлтийн үйлчилгээ",
+          "quantity": 4,
+          "unit_price": 95000,
+          "total": 380000
+        }
+      ],
+      "grand_total": 380000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PNG",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_018.pdf",
+      "invoice_number": "18",
+      "vendor_name": "Демо Компани-5",
+      "bank_name": "Демо Банк 2",
+      "account_number": "1009900880",
+      "email": "info@demo5.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Оффис түрээс (сарын)",
+          "quantity": 1,
+          "unit_price": 2500000,
+          "total": 2500000
+        }
+      ],
+      "grand_total": 2500000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_019.pdf",
+      "invoice_number": "19",
+      "vendor_name": "Демо Компани-8",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4005544332",
+      "email": "billing@demo8.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Бараа бүртгэлийн систем (сарын)",
+          "quantity": 1,
+          "unit_price": 200000,
+          "total": 200000
+        }
+      ],
+      "grand_total": 200000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_020.png",
+      "invoice_number": "020",
+      "vendor_name": "Демо Компани-8",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4005544332",
+      "email": "billing@demo8.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Форклифт түрээс (сарын)",
+          "quantity": 1,
+          "unit_price": 550000,
+          "total": 550000
+        }
+      ],
+      "grand_total": 550000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PNG",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_021.pdf",
+      "invoice_number": "21",
+      "vendor_name": "Демо Компани-10",
+      "bank_name": "Демо Банк 1",
+      "account_number": "1002233445",
+      "email": "logistics@demo10.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "GPS трекер үйлчилгээ (сарын)",
+          "quantity": 1,
+          "unit_price": 85000,
+          "total": 85000
+        }
+      ],
+      "grand_total": 85000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_022.pdf",
+      "invoice_number": "22",
+      "vendor_name": "Демо Компани-1",
+      "bank_name": "Демо Банк 1",
+      "account_number": "5001122334",
+      "email": "finance@demo1.mn",
+      "invoice_date": "2026-02-30",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Монитор",
+          "quantity": 2,
+          "unit_price": 280000,
+          "total": 560000
+        },
+        {
+          "description": "Принтер",
+          "quantity": 2,
+          "unit_price": 320000,
+          "total": 640000
+        }
+      ],
+      "grand_total": 1200000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [
+        {
+          "type": "INVALID_DATE",
+          "detail": "Cannot parse invoice date: '2026-02-30'"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "INVALID_DATE: Cannot parse invoice date: '2026-02-30'"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_023.png",
+      "invoice_number": "023",
+      "vendor_name": "Демо Компани-2",
+      "bank_name": "Демо Банк 1",
+      "account_number": "1102003004",
+      "email": "billing@demo2.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Дотоод сүлжээ засвар",
+          "quantity": 1,
+          "unit_price": 300000,
+          "total": 300000
+        }
+      ],
+      "grand_total": 300000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PNG",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_024.png",
+      "invoice_number": "024",
+      "vendor_name": "Демо Компани-4",
+      "bank_name": "Демо Банк 2",
+      "account_number": "5007788990",
+      "email": "invoicing@demo4.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Техник үйлчилгээ",
+          "quantity": 1,
+          "unit_price": 75000,
+          "total": 75000
+        }
+      ],
+      "grand_total": 75000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PNG",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_025.pdf",
+      "invoice_number": "25",
+      "vendor_name": "Демо Компани-8",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4005544332",
+      "email": "billing@demo8.mn",
+      "invoice_date": "2025-12-09",
+      "due_date": "2025-12-24",
+      "line_items": [
+        {
+          "description": "Агуулахын ажилчдын хөлс",
+          "quantity": 1,
+          "unit_price": 450000,
+          "total": 450000
+        }
+      ],
+      "grand_total": 450000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [
+        {
+          "type": "DUPLICATE",
+          "detail": "Matches historical invoice ID=432: same vendor, date, total"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "DUPLICATE: Matches historical invoice ID=432: same vendor, date, total"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_026.pdf",
+      "invoice_number": "26",
+      "vendor_name": "Демо Компани-11",
+      "bank_name": "Демо Банк 1",
+      "account_number": "9991112233",
+      "email": "info@demo11.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Ачаа тээвэр (дотоод)",
+          "quantity": 1,
+          "unit_price": 350000,
+          "total": 350000
+        }
+      ],
+      "grand_total": 350000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [
+        {
+          "type": "UNREGISTERED_VENDOR",
+          "detail": "Vendor 'Демо Компани-11' not found in master database"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "UNREGISTERED_VENDOR: Vendor not in master database"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_027.pdf",
+      "invoice_number": "27",
+      "vendor_name": "Демо Компани-5",
+      "bank_name": "Демо Банк 2",
+      "account_number": "1009900880",
+      "email": "info@demo5.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Цэвэрлэгээ (сарын)",
+          "quantity": 1,
+          "unit_price": 200000,
+          "total": 200000
+        }
+      ],
+      "grand_total": 200000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_028.pdf",
+      "invoice_number": "28",
+      "vendor_name": "Демо Компани-5",
+      "bank_name": "Демо Банк 2",
+      "account_number": "1009900880",
+      "email": "info@demo5.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Тээврийн даатгал (сарын)",
+          "quantity": 1,
+          "unit_price": 150000,
+          "total": 150000
+        }
+      ],
+      "grand_total": 190000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [
+        {
+          "type": "AMOUNT_MISMATCH",
+          "detail": "Sum of lines (150000) ≠ grand total (190000)"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "AMOUNT_MISMATCH: Sum of lines (150000) ≠ grand total (190000)"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_029.pdf",
+      "invoice_number": "29",
+      "vendor_name": "Демо Компани-2",
+      "bank_name": "Демо Банк 1",
+      "account_number": "1102003004",
+      "email": "billing@demo2.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "IP камер",
+          "quantity": 4,
+          "unit_price": 150000,
+          "total": 600000
+        },
+        {
+          "description": "Сүлжээний кабель угсралт",
+          "quantity": 1,
+          "unit_price": 85000,
+          "total": 85000
+        }
+      ],
+      "grand_total": 685000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_030.pdf",
+      "invoice_number": "30",
+      "vendor_name": "Демо Компани-3",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4001122334",
+      "email": "accounts@demo3.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Монитор",
+          "quantity": 4,
+          "unit_price": 280000,
+          "total": 1120000
+        },
+        {
+          "description": "Принтер",
+          "quantity": 2,
+          "unit_price": 320000,
+          "total": 640000
+        }
+      ],
+      "grand_total": 1760000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_031.pdf",
+      "invoice_number": "31",
+      "vendor_name": "Демо Компани-6",
+      "bank_name": "Демо Банк 2",
+      "account_number": "1166778899",
+      "email": "billing@demo6.mn",
+      "invoice_date": "2026-03-20",
+      "due_date": "2026-04-04",
+      "line_items": [
+        {
+          "description": "Форклифт түрээс (сарын)",
+          "quantity": 1,
+          "unit_price": 550000,
+          "total": 550000
+        }
+      ],
+      "grand_total": 550000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_032.pdf",
+      "invoice_number": "032",
+      "vendor_name": "Демо Компани-3",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4001122334",
+      "email": "accounts@demo3.mn",
+      "invoice_date": "2026-03-23",
+      "due_date": "2026-04-07",
+      "line_items": [
+        {
+          "description": "Програм хангамж нийлүүлэлт",
+          "quantity": 1,
+          "unit_price": 380000,
+          "total": 380000
+        }
+      ],
+      "grand_total": 380000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_033.pdf",
+      "invoice_number": "33",
+      "vendor_name": "Демо Компани-7",
+      "bank_name": "Демо Банк 2",
+      "account_number": "5004455667",
+      "email": "finance@demo7.mn",
+      "invoice_date": "2026-03-23",
+      "due_date": "2026-04-07",
+      "line_items": [
+        {
+          "description": "Цэвэрлэгээ (сарын)",
+          "quantity": 1,
+          "unit_price": 200000,
+          "total": 200000
+        }
+      ],
+      "grand_total": 200000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_034.pdf",
+      "invoice_number": "034",
+      "vendor_name": "Демо Компани-2",
+      "bank_name": "Демо Банк 1",
+      "account_number": "1102003004",
+      "email": "billing@demo2.mn",
+      "invoice_date": "2026-04-10",
+      "due_date": "2026-04-01",
+      "line_items": [
+        {
+          "description": "Барилга засвар материал",
+          "quantity": 4,
+          "unit_price": 150000,
+          "total": 600000
+        }
+      ],
+      "grand_total": 600000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [
+        {
+          "type": "INVALID_DATE",
+          "detail": "Due date (2026-04-01) is before invoice date (2026-04-10)"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "INVALID_DATE: Due date (2026-04-01) is before invoice date (2026-04-10)"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_035.pdf",
+      "invoice_number": "35",
+      "vendor_name": "Демо Компани-2",
+      "bank_name": "Демо Банк 1",
+      "account_number": "1102003004",
+      "email": "billing@demo2.mn",
+      "invoice_date": "2025-04-07",
+      "due_date": "2025-04-22",
+      "line_items": [
+        {
+          "description": "IP камер",
+          "quantity": 4,
+          "unit_price": 150000,
+          "total": 600000
+        },
+        {
+          "description": "Сүлжээний кабель угсралт",
+          "quantity": 3,
+          "unit_price": 85000,
+          "total": 255000
+        }
+      ],
+      "grand_total": 855000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [
+        {
+          "type": "DUPLICATE",
+          "detail": "Matches historical invoice ID=163: same vendor, date, total"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "DUPLICATE: Matches historical invoice ID=163: same vendor, date, total"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_036.pdf",
+      "invoice_number": "036",
+      "vendor_name": "Демо Компани-9",
+      "bank_name": "Демо Банк 1",
+      "account_number": "5003322110",
+      "email": "info@demo9.mn",
+      "invoice_date": "2026-03-01",
+      "due_date": "2026-03-16",
+      "line_items": [
+        {
+          "description": "Шатахууны зардал",
+          "quantity": 1,
+          "unit_price": 280000,
+          "total": 280000
+        }
+      ],
+      "grand_total": 280000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_037.pdf",
+      "invoice_number": "37",
+      "vendor_name": "Демо Компани-1",
+      "bank_name": "Демо Банк 1",
+      "account_number": "5001122334",
+      "email": "finance@demo1.mn",
+      "invoice_date": "2026-03-03",
+      "due_date": "2026-03-18",
+      "line_items": [
+        {
+          "description": "Техник үйлчилгээ",
+          "quantity": 1,
+          "unit_price": 75000,
+          "total": 75000
+        }
+      ],
+      "grand_total": 75000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_038.pdf",
+      "invoice_number": "038",
+      "vendor_name": "Демо Компани-7",
+      "bank_name": "Демо Банк 2",
+      "account_number": "5004455667",
+      "email": "finance@demo7.mn",
+      "invoice_date": "2025-07-27",
+      "due_date": "2025-08-11",
+      "line_items": [
+        {
+          "description": "Хогийн зардал (сарын)",
+          "quantity": 1,
+          "unit_price": 60000,
+          "total": 60000
+        },
+        {
+          "description": "Гадна талбай цэвэрлэгээ",
+          "quantity": 1,
+          "unit_price": 110000,
+          "total": 110000
+        }
+      ],
+      "grand_total": 170000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [
+        {
+          "type": "DUPLICATE",
+          "detail": "Matches historical invoice ID=157: same vendor, date, total"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "DUPLICATE: Matches historical invoice ID=157: same vendor, date, total"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_039.pdf",
+      "invoice_number": "39",
+      "vendor_name": "Демо Компани-10",
+      "bank_name": "Демо Банк 1",
+      "account_number": "1002233951",
+      "email": "logistics@demo10.mn",
+      "invoice_date": "2026-03-03",
+      "due_date": "2026-03-18",
+      "line_items": [
+        {
+          "description": "Ачаа тээвэр (олон улс)",
+          "quantity": 1,
+          "unit_price": 2500000,
+          "total": 2500000
+        },
+        {
+          "description": "Гаалийн зардал",
+          "quantity": 1,
+          "unit_price": 420000,
+          "total": 420000
+        }
+      ],
+      "grand_total": 2920000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [
+        {
+          "type": "BANK_ACCOUNT_MISMATCH",
+          "detail": "Account mismatch: invoice='1002233951', DB='1002233445'"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "BANK_ACCOUNT_MISMATCH: Account mismatch: invoice='1002233951', DB='1002233445'"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_040.pdf",
+      "invoice_number": "040",
+      "vendor_name": "Демо Компани-9",
+      "bank_name": "Демо Банк 1",
+      "account_number": "5003322110",
+      "email": "info@demo9.mn",
+      "invoice_date": "2026-04-04",
+      "due_date": "2026-04-19",
+      "line_items": [
+        {
+          "description": "Агуулахын ажилчдын хөлс",
+          "quantity": 1,
+          "unit_price": 450000,
+          "total": 450000
+        }
+      ],
+      "grand_total": 450000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_041.pdf",
+      "invoice_number": "41",
+      "vendor_name": "Демо Компани-11",
+      "bank_name": "Демо Банк 1",
+      "account_number": "9991112233",
+      "email": "info@demo11.mn",
+      "invoice_date": "2026-04-03",
+      "due_date": "2026-04-18",
+      "line_items": [
+        {
+          "description": "Бараа бүртгэлийн систем (сарын)",
+          "quantity": 1,
+          "unit_price": 200000,
+          "total": 200000
+        }
+      ],
+      "grand_total": 200000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [
+        {
+          "type": "UNREGISTERED_VENDOR",
+          "detail": "Vendor 'Демо Компани-11' not found in master database"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "UNREGISTERED_VENDOR: Vendor not in master database"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_042.pdf",
+      "invoice_number": "042",
+      "vendor_name": "Демо Компани-4",
+      "bank_name": "Демо Банк 2",
+      "account_number": "5007788990",
+      "email": "invoicing@demo4.mn",
+      "invoice_date": "2026-03-06",
+      "due_date": "2026-03-21",
+      "line_items": [
+        {
+          "description": "Монитор",
+          "quantity": 3,
+          "unit_price": 280000,
+          "total": 840000
+        },
+        {
+          "description": "Принтер",
+          "quantity": 2,
+          "unit_price": 320000,
+          "total": 640000
+        }
+      ],
+      "grand_total": 1480000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_043.pdf",
+      "invoice_number": "43",
+      "vendor_name": "Демо Компани-5",
+      "bank_name": "Демо Банк 2",
+      "account_number": "1009900880",
+      "email": "info@demo5.mn",
+      "invoice_date": "2026-03-03",
+      "due_date": "2026-03-18",
+      "line_items": [
+        {
+          "description": "Дээврийн засвар",
+          "quantity": 1,
+          "unit_price": 350000,
+          "total": 350000
+        }
+      ],
+      "grand_total": 350000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_044.pdf",
+      "invoice_number": "044",
+      "vendor_name": "Демо Компани-6",
+      "bank_name": "Демо Банк 2",
+      "account_number": "1166778899",
+      "email": "billing@demo6.mn",
+      "invoice_date": "2026-03-01",
+      "due_date": "2026-03-16",
+      "line_items": [
+        {
+          "description": "Техник үйлчилгээ",
+          "quantity": 2,
+          "unit_price": 75000,
+          "total": 150000
+        }
+      ],
+      "grand_total": 150000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_045.pdf",
+      "invoice_number": "45",
+      "vendor_name": "Демо Компани-1",
+      "bank_name": "Демо Банк 1",
+      "account_number": "5001122334",
+      "email": "finance@demo1.mn",
+      "invoice_date": "2026-03-25",
+      "due_date": "2026-04-09",
+      "line_items": [
+        {
+          "description": "Интернэт (Шилэн кабель, сарын)",
+          "quantity": 1,
+          "unit_price": 150000,
+          "total": 150000
+        }
+      ],
+      "grand_total": 150000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_046.pdf",
+      "invoice_number": "046",
+      "vendor_name": "Демо Компани-3",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4001122334",
+      "email": "accounts@demo3.mn",
+      "invoice_date": "2026-04-07",
+      "due_date": "2026-04-22",
+      "line_items": [
+        {
+          "description": "Програм хангамж нийлүүлэлт",
+          "quantity": 1,
+          "unit_price": 380000,
+          "total": 380000
+        }
+      ],
+      "grand_total": 380000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_047.pdf",
+      "invoice_number": "47",
+      "vendor_name": "Демо Компани-1",
+      "bank_name": "Демо Банк 1",
+      "account_number": "5001122334",
+      "email": "finance@demo1.mn",
+      "invoice_date": "2025-04-29",
+      "due_date": "2025-05-14",
+      "line_items": [
+        {
+          "description": "Вэб байршуулалт (сарын)",
+          "quantity": 1,
+          "unit_price": 120000,
+          "total": 120000
+        },
+        {
+          "description": "Домэйн сунгалт (жилийн)",
+          "quantity": 1,
+          "unit_price": 25000,
+          "total": 25000
+        },
+        {
+          "description": "SSL сертификат (жилийн)",
+          "quantity": 1,
+          "unit_price": 45000,
+          "total": 45000
+        }
+      ],
+      "grand_total": 190000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [
+        {
+          "type": "DUPLICATE",
+          "detail": "Matches historical invoice ID=339: same vendor, date, total"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "DUPLICATE: Matches historical invoice ID=339: same vendor, date, total"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_048.pdf",
+      "invoice_number": "048",
+      "vendor_name": "Демо Компани-5",
+      "bank_name": "Демо Банк 2",
+      "account_number": "1009900880",
+      "email": "info@demo5.mn",
+      "invoice_date": "2026-04-01",
+      "due_date": "2026-04-16",
+      "line_items": [
+        {
+          "description": "Техник үйлчилгээ",
+          "quantity": 2,
+          "unit_price": 75000,
+          "total": 150000
+        }
+      ],
+      "grand_total": 150000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_049.pdf",
+      "invoice_number": "49",
+      "vendor_name": "Демо Компани-5",
+      "bank_name": "Демо Банк 2",
+      "account_number": "1009900880",
+      "email": "info@demo5.mn",
+      "invoice_date": "2026-03-06",
+      "due_date": "2026-03-21",
+      "line_items": [
+        {
+          "description": "Цэвэрлэгээ (сарын)",
+          "quantity": 1,
+          "unit_price": 200000,
+          "total": 200000
+        }
+      ],
+      "grand_total": 200000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_050.pdf",
+      "invoice_number": "050",
+      "vendor_name": "Демо Компани-7",
+      "bank_name": "Демо Банк 2",
+      "account_number": "5004455667",
+      "email": "finance@demo7.mn",
+      "invoice_date": "2026-03-03",
+      "due_date": "2026-03-18",
+      "line_items": [
+        {
+          "description": "Техник үйлчилгээ",
+          "quantity": 1,
+          "unit_price": 75000,
+          "total": 75000
+        }
+      ],
+      "grand_total": 75000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_051.pdf",
+      "invoice_number": "51",
+      "vendor_name": "Демо Компани-2",
+      "bank_name": "Демо Банк 1",
+      "account_number": "1102003004",
+      "email": "billing@demo2.mn",
+      "invoice_date": "2026-03-15",
+      "due_date": "2026-03-30",
+      "line_items": [
+        {
+          "description": "IP камер",
+          "quantity": 1,
+          "unit_price": 150000,
+          "total": 150000
+        },
+        {
+          "description": "Сүлжээний кабель угсралт",
+          "quantity": 2,
+          "unit_price": 85000,
+          "total": 170000
+        }
+      ],
+      "grand_total": 320000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_052.pdf",
+      "invoice_number": "052",
+      "vendor_name": "Демо Компани-7",
+      "bank_name": "Демо Банк 2",
+      "account_number": "5004455667",
+      "email": "finance@demo7.mn",
+      "invoice_date": "2026-03-27",
+      "due_date": "2026-04-11",
+      "line_items": [
+        {
+          "description": "Хогийн зардал (сарын)",
+          "quantity": 1,
+          "unit_price": 60000,
+          "total": 60000
+        },
+        {
+          "description": "Гадна талбай цэвэрлэгээ",
+          "quantity": 1,
+          "unit_price": 110000,
+          "total": 110000
+        }
+      ],
+      "grand_total": 170000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_053.pdf",
+      "invoice_number": "53",
+      "vendor_name": "Демо Компани-9",
+      "bank_name": "Демо Банк 1",
+      "account_number": "5003322521",
+      "email": "info@demo9.mn",
+      "invoice_date": "2026-04-02",
+      "due_date": "2026-04-17",
+      "line_items": [
+        {
+          "description": "Вэб байршуулалт (сарын)",
+          "quantity": 1,
+          "unit_price": 120000,
+          "total": 120000
+        },
+        {
+          "description": "Домэйн сунгалт (жилийн)",
+          "quantity": 1,
+          "unit_price": 25000,
+          "total": 25000
+        },
+        {
+          "description": "SSL сертификат (жилийн)",
+          "quantity": 1,
+          "unit_price": 45000,
+          "total": 45000
+        }
+      ],
+      "grand_total": 190000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [
+        {
+          "type": "BANK_ACCOUNT_MISMATCH",
+          "detail": "Account mismatch: invoice='5003322521', DB='5003322110'"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "BANK_ACCOUNT_MISMATCH: Account mismatch: invoice='5003322521', DB='5003322110'"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_054.pdf",
+      "invoice_number": "054",
+      "vendor_name": "Демо Компани-9",
+      "bank_name": "Демо Банк 1",
+      "account_number": "5003322110",
+      "email": "info@demo9.mn",
+      "invoice_date": "2026-03-17",
+      "due_date": "2026-04-01",
+      "line_items": [
+        {
+          "description": "Агуулахын ажилчдын хөлс",
+          "quantity": 1,
+          "unit_price": 450000,
+          "total": 450000
+        }
+      ],
+      "grand_total": 450000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_055.pdf",
+      "invoice_number": "55",
+      "vendor_name": "Демо Компани-10",
+      "bank_name": "Демо Банк 1",
+      "account_number": "1002233445",
+      "email": "logistics@demo10.mn",
+      "invoice_date": "2026-03-21",
+      "due_date": "2026-04-05",
+      "line_items": [
+        {
+          "description": "Тээврийн даатгал (сарын)",
+          "quantity": 1,
+          "unit_price": 150000,
+          "total": 150000
+        }
+      ],
+      "grand_total": 150000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_056.pdf",
+      "invoice_number": "056",
+      "vendor_name": "Демо Компани-9",
+      "bank_name": "Демо Банк 1",
+      "account_number": "5003322896",
+      "email": "info@demo9.mn",
+      "invoice_date": "2026-04-04",
+      "due_date": "2026-04-19",
+      "line_items": [
+        {
+          "description": "Барилга засвар материал",
+          "quantity": 2,
+          "unit_price": 150000,
+          "total": 300000
+        }
+      ],
+      "grand_total": 300000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [
+        {
+          "type": "BANK_ACCOUNT_MISMATCH",
+          "detail": "Account mismatch: invoice='5003322896', DB='5003322110'"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "BANK_ACCOUNT_MISMATCH: Account mismatch: invoice='5003322896', DB='5003322110'"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_057.pdf",
+      "invoice_number": "57",
+      "vendor_name": "Демо Компани-7",
+      "bank_name": "Демо Банк 2",
+      "account_number": "5004455667",
+      "email": "finance@demo7.mn",
+      "invoice_date": "2025-05-11",
+      "due_date": "2025-05-26",
+      "line_items": [
+        {
+          "description": "Сантехникийн засвар",
+          "quantity": 3,
+          "unit_price": 130000,
+          "total": 390000
+        }
+      ],
+      "grand_total": 390000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [
+        {
+          "type": "DUPLICATE",
+          "detail": "Matches historical invoice ID=396: same vendor, date, total"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "DUPLICATE: Matches historical invoice ID=396: same vendor, date, total"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_058.pdf",
+      "invoice_number": "058",
+      "vendor_name": "Демо Компани-3",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4001122334",
+      "email": "accounts@demo3.mn",
+      "invoice_date": "2026-03-23",
+      "due_date": "2026-04-07",
+      "line_items": [
+        {
+          "description": "Монитор",
+          "quantity": 1,
+          "unit_price": 280000,
+          "total": 280000
+        }
+      ],
+      "grand_total": 280000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_059.pdf",
+      "invoice_number": "59",
+      "vendor_name": "Демо Компани-3",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4001122334",
+      "email": "accounts@demo3.mn",
+      "invoice_date": "2026-03-18",
+      "due_date": "2026-04-02",
+      "line_items": [
+        {
+          "description": "Тусгай зөвшөөрөл сунгалт",
+          "quantity": 1,
+          "unit_price": 380000,
+          "total": 380000
+        }
+      ],
+      "grand_total": 380000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_060.pdf",
+      "invoice_number": "060",
+      "vendor_name": "Демо Компани-10",
+      "bank_name": "Демо Банк 1",
+      "account_number": "1002233445",
+      "email": "logistics@demo10.mn",
+      "invoice_date": "2026-03-27",
+      "due_date": "2026-04-11",
+      "line_items": [
+        {
+          "description": "Хүргэлтийн үйлчилгээ",
+          "quantity": 1,
+          "unit_price": 95000,
+          "total": 95000
+        }
+      ],
+      "grand_total": 95000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_061.pdf",
+      "invoice_number": "61",
+      "vendor_name": "Демо Компани-8",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4005544332",
+      "email": "billing@demo8.mn",
+      "invoice_date": "2026-04-09",
+      "due_date": "2026-04-24",
+      "line_items": [
+        {
+          "description": "Ачаа тээвэр (олон улс)",
+          "quantity": 1,
+          "unit_price": 2500000,
+          "total": 2500000
+        },
+        {
+          "description": "Гаалийн зардал",
+          "quantity": 1,
+          "unit_price": 420000,
+          "total": 420000
+        }
+      ],
+      "grand_total": 2920000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_062.pdf",
+      "invoice_number": "062",
+      "vendor_name": "Демо Компани-4",
+      "bank_name": "Демо Банк 2",
+      "account_number": "5007788990",
+      "email": "invoicing@demo4.mn",
+      "invoice_date": "2026-03-11",
+      "due_date": "2026-03-26",
+      "line_items": [
+        {
+          "description": "IP камер",
+          "quantity": 1,
+          "unit_price": 150000,
+          "total": 150000
+        },
+        {
+          "description": "Сүлжээний кабель угсралт",
+          "quantity": 4,
+          "unit_price": 85000,
+          "total": 340000
+        }
+      ],
+      "grand_total": 490000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_063.pdf",
+      "invoice_number": "63",
+      "vendor_name": "Демо Компани-2",
+      "bank_name": "Демо Банк 1",
+      "account_number": "1102003004",
+      "email": "billing@demo2.mn",
+      "invoice_date": "2026-03-26",
+      "due_date": "2026-04-10",
+      "line_items": [
+        {
+          "description": "IP камер",
+          "quantity": 4,
+          "unit_price": 150000,
+          "total": 600000
+        },
+        {
+          "description": "Сүлжээний кабель угсралт",
+          "quantity": 2,
+          "unit_price": 85000,
+          "total": 170000
+        }
+      ],
+      "grand_total": 770000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_064.pdf",
+      "invoice_number": "064",
+      "vendor_name": "Демо Компани-2",
+      "bank_name": "Демо Банк 1",
+      "account_number": "1102003004",
+      "email": "billing@demo2.mn",
+      "invoice_date": "2026-03-19",
+      "due_date": "2026-04-03",
+      "line_items": [
+        {
+          "description": "Бараа бүртгэлийн систем (сарын)",
+          "quantity": 1,
+          "unit_price": 200000,
+          "total": 200000
+        }
+      ],
+      "grand_total": 220000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [
+        {
+          "type": "AMOUNT_MISMATCH",
+          "detail": "Sum of lines (200000) ≠ grand total (220000)"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "AMOUNT_MISMATCH: Sum of lines (200000) ≠ grand total (220000)"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_065.pdf",
+      "invoice_number": "65",
+      "vendor_name": "Демо Компани-3",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4001122334",
+      "email": "accounts@demo3.mn",
+      "invoice_date": "2026-04-06",
+      "due_date": "2026-04-21",
+      "line_items": [
+        {
+          "description": "IP камер",
+          "quantity": 4,
+          "unit_price": 150000,
+          "total": 600000
+        },
+        {
+          "description": "Сүлжээний кабель угсралт",
+          "quantity": 3,
+          "unit_price": 85000,
+          "total": 255000
+        }
+      ],
+      "grand_total": 855000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_066.pdf",
+      "invoice_number": "066",
+      "vendor_name": "Демо Компани-1",
+      "bank_name": "Демо Банк 1",
+      "account_number": "5001122334",
+      "email": "finance@demo1.mn",
+      "invoice_date": "2026-02-30",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Ачаа тээвэр (олон улс)",
+          "quantity": 1,
+          "unit_price": 2500000,
+          "total": 2500000
+        },
+        {
+          "description": "Гаалийн зардал",
+          "quantity": 1,
+          "unit_price": 420000,
+          "total": 420000
+        }
+      ],
+      "grand_total": 2920000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [
+        {
+          "type": "INVALID_DATE",
+          "detail": "Cannot parse invoice date: '2026-02-30'"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "INVALID_DATE: Cannot parse invoice date: '2026-02-30'"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_067.pdf",
+      "invoice_number": "67",
+      "vendor_name": "Демо Компани-9",
+      "bank_name": "Демо Банк 1",
+      "account_number": "5003322110",
+      "email": "info@demo9.mn",
+      "invoice_date": "2026-03-18",
+      "due_date": "2026-04-02",
+      "line_items": [
+        {
+          "description": "Тагт, цонх засвар",
+          "quantity": 1,
+          "unit_price": 85000,
+          "total": 85000
+        },
+        {
+          "description": "Хаалга, цоож засвар",
+          "quantity": 3,
+          "unit_price": 65000,
+          "total": 195000
+        }
+      ],
+      "grand_total": 280000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_068.pdf",
+      "invoice_number": "068",
+      "vendor_name": "Демо Компани-6",
+      "bank_name": "Демо Банк 2",
+      "account_number": "1166778899",
+      "email": "billing@demo6.mn",
+      "invoice_date": "2026-04-02",
+      "due_date": "2026-04-17",
+      "line_items": [
+        {
+          "description": "Техник үйлчилгээ",
+          "quantity": 1,
+          "unit_price": 75000,
+          "total": 75000
+        }
+      ],
+      "grand_total": 75000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_069.pdf",
+      "invoice_number": "69",
+      "vendor_name": "Демо Компани-2",
+      "bank_name": "Демо Банк 1",
+      "account_number": "1102003004",
+      "email": "billing@demo2.mn",
+      "invoice_date": "2026-04-07",
+      "due_date": "2026-04-22",
+      "line_items": [
+        {
+          "description": "Тусгай зөвшөөрөл сунгалт",
+          "quantity": 1,
+          "unit_price": 380000,
+          "total": 380000
+        }
+      ],
+      "grand_total": 380000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_070.pdf",
+      "invoice_number": "070",
+      "vendor_name": "Демо Компани-6",
+      "bank_name": "Демо Банк 2",
+      "account_number": "1166778899",
+      "email": "billing@demo6.mn",
+      "invoice_date": "2026-03-05",
+      "due_date": "2026-03-20",
+      "line_items": [
+        {
+          "description": "Цахилгаан төлбөр (сарын)",
+          "quantity": 1,
+          "unit_price": 180000,
+          "total": 180000
+        },
+        {
+          "description": "Дулааны төлбөр (сарын)",
+          "quantity": 1,
+          "unit_price": 320000,
+          "total": 320000
+        },
+        {
+          "description": "Усны төлбөр (сарын)",
+          "quantity": 1,
+          "unit_price": 45000,
+          "total": 45000
+        }
+      ],
+      "grand_total": 545000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_071.pdf",
+      "invoice_number": "71",
+      "vendor_name": "Демо Компани-3",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4001122334",
+      "email": "accounts@demo3.mn",
+      "invoice_date": "2026-03-30",
+      "due_date": "2026-04-14",
+      "line_items": [
+        {
+          "description": "IP камер",
+          "quantity": 3,
+          "unit_price": 150000,
+          "total": 450000
+        },
+        {
+          "description": "Сүлжээний кабель угсралт",
+          "quantity": 4,
+          "unit_price": 85000,
+          "total": 340000
+        }
+      ],
+      "grand_total": 790000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_072.pdf",
+      "invoice_number": "072",
+      "vendor_name": "Демо Компани-2",
+      "bank_name": "Демо Банк 1",
+      "account_number": "1102003004",
+      "email": "billing@demo2.mn",
+      "invoice_date": "2026-03-13",
+      "due_date": "2026-03-28",
+      "line_items": [
+        {
+          "description": "Дээврийн засвар",
+          "quantity": 1,
+          "unit_price": 350000,
+          "total": 350000
+        }
+      ],
+      "grand_total": 350000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_073.pdf",
+      "invoice_number": "73",
+      "vendor_name": "Демо Компани-9",
+      "bank_name": "Демо Банк 1",
+      "account_number": "5003322110",
+      "email": "info@demo9.mn",
+      "invoice_date": "2026-03-29",
+      "due_date": "2026-04-13",
+      "line_items": [
+        {
+          "description": "Ачаа тээвэр (дотоод)",
+          "quantity": 1,
+          "unit_price": 350000,
+          "total": 350000
+        }
+      ],
+      "grand_total": 350000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_074.pdf",
+      "invoice_number": "074",
+      "vendor_name": "Демо Компани-8",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4005544332",
+      "email": "billing@demo8.mn",
+      "invoice_date": "2026-03-20",
+      "due_date": "2026-04-04",
+      "line_items": [
+        {
+          "description": "Ачаа тээвэр (олон улс)",
+          "quantity": 1,
+          "unit_price": 2500000,
+          "total": 2500000
+        },
+        {
+          "description": "Гаалийн зардал",
+          "quantity": 1,
+          "unit_price": 420000,
+          "total": 420000
+        }
+      ],
+      "grand_total": 2920000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_075.pdf",
+      "invoice_number": "75",
+      "vendor_name": "Демо Компани-2",
+      "bank_name": "Демо Банк 1",
+      "account_number": "1102003272",
+      "email": "billing@demo2.mn",
+      "invoice_date": "2026-03-07",
+      "due_date": "2026-03-22",
+      "line_items": [
+        {
+          "description": "Програм хангамж нийлүүлэлт",
+          "quantity": 2,
+          "unit_price": 380000,
+          "total": 760000
+        }
+      ],
+      "grand_total": 760000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [
+        {
+          "type": "BANK_ACCOUNT_MISMATCH",
+          "detail": "Account mismatch: invoice='1102003272', DB='1102003004'"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "BANK_ACCOUNT_MISMATCH: Account mismatch: invoice='1102003272', DB='1102003004'"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_076.pdf",
+      "invoice_number": "076",
+      "vendor_name": "Демо Компани-6",
+      "bank_name": "Демо Банк 2",
+      "account_number": "1166778899",
+      "email": "billing@demo6.mn",
+      "invoice_date": "2026-03-17",
+      "due_date": "2026-04-01",
+      "line_items": [
+        {
+          "description": "Лифт засвар үйлчилгээ",
+          "quantity": 1,
+          "unit_price": 400000,
+          "total": 400000
+        }
+      ],
+      "grand_total": 400000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_077.pdf",
+      "invoice_number": "77",
+      "vendor_name": "Демо Компани-7",
+      "bank_name": "Демо Банк 2",
+      "account_number": "5004455667",
+      "email": "finance@demo7.mn",
+      "invoice_date": "2026-03-22",
+      "due_date": "2026-04-06",
+      "line_items": [
+        {
+          "description": "Цэвэрлэгээ (сарын)",
+          "quantity": 1,
+          "unit_price": 200000,
+          "total": 200000
+        }
+      ],
+      "grand_total": 200000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_078.pdf",
+      "invoice_number": "078",
+      "vendor_name": "Демо Компани-4",
+      "bank_name": "Демо Банк 2",
+      "account_number": "5007788990",
+      "email": "invoicing@demo4.mn",
+      "invoice_date": "2026-03-17",
+      "due_date": "2026-04-01",
+      "line_items": [
+        {
+          "description": "IP камер",
+          "quantity": 3,
+          "unit_price": 150000,
+          "total": 450000
+        },
+        {
+          "description": "Сүлжээний кабель угсралт",
+          "quantity": 1,
+          "unit_price": 85000,
+          "total": 85000
+        }
+      ],
+      "grand_total": 535000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_079.pdf",
+      "invoice_number": "79",
+      "vendor_name": "Демо Компани-9",
+      "bank_name": "Демо Банк 1",
+      "account_number": "5003322110",
+      "email": "info@demo9.mn",
+      "invoice_date": "2026-03-01",
+      "due_date": "2026-03-16",
+      "line_items": [
+        {
+          "description": "Хүргэлтийн үйлчилгээ",
+          "quantity": 2,
+          "unit_price": 95000,
+          "total": 190000
+        }
+      ],
+      "grand_total": 190000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_080.pdf",
+      "invoice_number": "080",
+      "vendor_name": "Демо Компани-6",
+      "bank_name": "Демо Банк 2",
+      "account_number": "1166778899",
+      "email": "billing@demo6.mn",
+      "invoice_date": "2026-04-01",
+      "due_date": "2026-04-16",
+      "line_items": [
+        {
+          "description": "Ачаа тээвэр (олон улс)",
+          "quantity": 1,
+          "unit_price": 2500000,
+          "total": 2500000
+        },
+        {
+          "description": "Гаалийн зардал",
+          "quantity": 1,
+          "unit_price": 420000,
+          "total": 420000
+        }
+      ],
+      "grand_total": 2930000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [
+        {
+          "type": "AMOUNT_MISMATCH",
+          "detail": "Sum of lines (2920000) ≠ grand total (2930000)"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "AMOUNT_MISMATCH: Sum of lines (2920000) ≠ grand total (2930000)"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_081.pdf",
+      "invoice_number": "81",
+      "vendor_name": "Демо Компани-3",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4001122334",
+      "email": "accounts@demo3.mn",
+      "invoice_date": "2026-03-09",
+      "due_date": "2026-03-24",
+      "line_items": [
+        {
+          "description": "Монитор",
+          "quantity": 3,
+          "unit_price": 280000,
+          "total": 840000
+        }
+      ],
+      "grand_total": 840000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_082.pdf",
+      "invoice_number": "082",
+      "vendor_name": "Демо Компани-10",
+      "bank_name": "Демо Банк 1",
+      "account_number": "1002233445",
+      "email": "logistics@demo10.mn",
+      "invoice_date": "2026-03-03",
+      "due_date": "2026-03-18",
+      "line_items": [
+        {
+          "description": "Ачаа боодлын материал",
+          "quantity": 2,
+          "unit_price": 65000,
+          "total": 130000
+        }
+      ],
+      "grand_total": 130000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_083.pdf",
+      "invoice_number": "83",
+      "vendor_name": "Демо Компани-3",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4001122334",
+      "email": "accounts@demo3.mn",
+      "invoice_date": "2026-03-16",
+      "due_date": "2026-03-31",
+      "line_items": [
+        {
+          "description": "Бараа бүртгэлийн систем (сарын)",
+          "quantity": 1,
+          "unit_price": 200000,
+          "total": 200000
+        }
+      ],
+      "grand_total": 200000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_084.pdf",
+      "invoice_number": "084",
+      "vendor_name": "Демо Компани-1",
+      "bank_name": "Демо Банк 1",
+      "account_number": "5001122334",
+      "email": "finance@demo1.mn",
+      "invoice_date": "2026-04-07",
+      "due_date": "2026-04-22",
+      "line_items": [
+        {
+          "description": "Дотоод сүлжээ засвар",
+          "quantity": 1,
+          "unit_price": 300000,
+          "total": 300000
+        }
+      ],
+      "grand_total": 300000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_085.pdf",
+      "invoice_number": "85",
+      "vendor_name": "Демо Компани-2",
+      "bank_name": "Демо Банк 1",
+      "account_number": "1102003004",
+      "email": "billing@demo2.mn",
+      "invoice_date": "2026-03-17",
+      "due_date": "2026-04-01",
+      "line_items": [
+        {
+          "description": "Сургалт (IT)",
+          "quantity": 1,
+          "unit_price": 400000,
+          "total": 400000
+        }
+      ],
+      "grand_total": 400000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_086.pdf",
+      "invoice_number": "086",
+      "vendor_name": "Демо Компани-8",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4005544332",
+      "email": "billing@demo8.mn",
+      "invoice_date": "2026-03-05",
+      "due_date": "2026-03-20",
+      "line_items": [
+        {
+          "description": "Тээврийн даатгал (сарын)",
+          "quantity": 1,
+          "unit_price": 150000,
+          "total": 150000
+        }
+      ],
+      "grand_total": 150000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_087.pdf",
+      "invoice_number": "87",
+      "vendor_name": "Демо Компани-5",
+      "bank_name": "Демо Банк 2",
+      "account_number": "1009900880",
+      "email": "info@demo5.mn",
+      "invoice_date": "2026-02-30",
+      "due_date": "2026-04-25",
+      "line_items": [
+        {
+          "description": "Ачаа тээвэр (дотоод)",
+          "quantity": 1,
+          "unit_price": 350000,
+          "total": 350000
+        }
+      ],
+      "grand_total": 350000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [
+        {
+          "type": "INVALID_DATE",
+          "detail": "Cannot parse invoice date: '2026-02-30'"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "INVALID_DATE: Cannot parse invoice date: '2026-02-30'"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_088.pdf",
+      "invoice_number": "088",
+      "vendor_name": "Демо Компани-12",
+      "bank_name": "Демо Банк 2",
+      "account_number": "8882223344",
+      "email": "contact@demo12.mn",
+      "invoice_date": "2026-03-08",
+      "due_date": "2026-03-23",
+      "line_items": [
+        {
+          "description": "Ачаа тээвэр (олон улс)",
+          "quantity": 1,
+          "unit_price": 2500000,
+          "total": 2500000
+        },
+        {
+          "description": "Гаалийн зардал",
+          "quantity": 1,
+          "unit_price": 420000,
+          "total": 420000
+        }
+      ],
+      "grand_total": 2920000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [
+        {
+          "type": "UNREGISTERED_VENDOR",
+          "detail": "Vendor 'Демо Компани-12' not found in master database"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "UNREGISTERED_VENDOR: Vendor not in master database"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_089.pdf",
+      "invoice_number": "89",
+      "vendor_name": "Демо Компани-10",
+      "bank_name": "Демо Банк 1",
+      "account_number": "1002233445",
+      "email": "logistics@demo10.mn",
+      "invoice_date": "2026-03-05",
+      "due_date": "2026-03-20",
+      "line_items": [
+        {
+          "description": "Барилга засвар материал",
+          "quantity": 1,
+          "unit_price": 150000,
+          "total": 150000
+        }
+      ],
+      "grand_total": 150000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_090.pdf",
+      "invoice_number": "090",
+      "vendor_name": "Демо Компани-4",
+      "bank_name": "Демо Банк 2",
+      "account_number": "5007788990",
+      "email": "invoicing@demo4.mn",
+      "invoice_date": "2026-03-05",
+      "due_date": "2026-03-20",
+      "line_items": [
+        {
+          "description": "Програм хангамж нийлүүлэлт",
+          "quantity": 2,
+          "unit_price": 380000,
+          "total": 760000
+        }
+      ],
+      "grand_total": 760000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_091.pdf",
+      "invoice_number": "91",
+      "vendor_name": "Демо Компани-6",
+      "bank_name": "Демо Банк 2",
+      "account_number": "1166778899",
+      "email": "billing@demo6.mn",
+      "invoice_date": "2026-03-31",
+      "due_date": "2026-04-15",
+      "line_items": [
+        {
+          "description": "Агааржуулалтын систем засвар",
+          "quantity": 1,
+          "unit_price": 220000,
+          "total": 220000
+        }
+      ],
+      "grand_total": 220000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_092.pdf",
+      "invoice_number": "092",
+      "vendor_name": "Демо Компани-11",
+      "bank_name": "Демо Банк 1",
+      "account_number": "9991112233",
+      "email": "info@demo11.mn",
+      "invoice_date": "2026-03-21",
+      "due_date": "2026-04-05",
+      "line_items": [
+        {
+          "description": "Сантехникийн засвар",
+          "quantity": 1,
+          "unit_price": 130000,
+          "total": 130000
+        }
+      ],
+      "grand_total": 130000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [
+        {
+          "type": "UNREGISTERED_VENDOR",
+          "detail": "Vendor 'Демо Компани-11' not found in master database"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "UNREGISTERED_VENDOR: Vendor not in master database"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_093.pdf",
+      "invoice_number": "93",
+      "vendor_name": "Демо Компани-9",
+      "bank_name": "Демо Банк 1",
+      "account_number": "5003322110",
+      "email": "info@demo9.mn",
+      "invoice_date": "2026-03-31",
+      "due_date": "2026-04-15",
+      "line_items": [
+        {
+          "description": "Сантехникийн засвар",
+          "quantity": 1,
+          "unit_price": 130000,
+          "total": 130000
+        }
+      ],
+      "grand_total": 130000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_094.pdf",
+      "invoice_number": "094",
+      "vendor_name": "Демо Компани-9",
+      "bank_name": "Демо Банк 1",
+      "account_number": "5003322110",
+      "email": "info@demo9.mn",
+      "invoice_date": "2026-03-10",
+      "due_date": "2026-03-25",
+      "line_items": [
+        {
+          "description": "Тээврийн хэрэгсэл засвар",
+          "quantity": 1,
+          "unit_price": 320000,
+          "total": 320000
+        }
+      ],
+      "grand_total": 340000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [
+        {
+          "type": "AMOUNT_MISMATCH",
+          "detail": "Sum of lines (320000) ≠ grand total (340000)"
+        }
+      ],
+      "decision": "DENY",
+      "decision_reasons": [
+        "AMOUNT_MISMATCH: Sum of lines (320000) ≠ grand total (340000)"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_095.pdf",
+      "invoice_number": "95",
+      "vendor_name": "Демо Компани-6",
+      "bank_name": "Демо Банк 2",
+      "account_number": "1166778899",
+      "email": "billing@demo6.mn",
+      "invoice_date": "2026-03-28",
+      "due_date": "2026-04-12",
+      "line_items": [
+        {
+          "description": "Цахилгаан төлбөр (сарын)",
+          "quantity": 1,
+          "unit_price": 180000,
+          "total": 180000
+        },
+        {
+          "description": "Дулааны төлбөр (сарын)",
+          "quantity": 1,
+          "unit_price": 320000,
+          "total": 320000
+        },
+        {
+          "description": "Усны төлбөр (сарын)",
+          "quantity": 1,
+          "unit_price": 45000,
+          "total": 45000
+        }
+      ],
+      "grand_total": 545000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_096.pdf",
+      "invoice_number": "096",
+      "vendor_name": "Демо Компани-8",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4005544332",
+      "email": "billing@demo8.mn",
+      "invoice_date": "2026-03-03",
+      "due_date": "2026-03-18",
+      "line_items": [
+        {
+          "description": "Оффис түрээс (сарын)",
+          "quantity": 1,
+          "unit_price": 2500000,
+          "total": 2500000
+        }
+      ],
+      "grand_total": 2500000,
+      "category": "Тээвэр, логистик",
+      "category_id": 5,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_097.pdf",
+      "invoice_number": "97",
+      "vendor_name": "Демо Компани-5",
+      "bank_name": "Демо Банк 2",
+      "account_number": "1009900880",
+      "email": "info@demo5.mn",
+      "invoice_date": "2026-03-22",
+      "due_date": "2026-04-06",
+      "line_items": [
+        {
+          "description": "Оффис түрээс (сарын)",
+          "quantity": 1,
+          "unit_price": 2500000,
+          "total": 2500000
+        }
+      ],
+      "grand_total": 2500000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_098.pdf",
+      "invoice_number": "098",
+      "vendor_name": "Демо Компани-3",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4001122334",
+      "email": "accounts@demo3.mn",
+      "invoice_date": "2026-03-01",
+      "due_date": "2026-03-16",
+      "line_items": [
+        {
+          "description": "Монитор",
+          "quantity": 1,
+          "unit_price": 280000,
+          "total": 280000
+        },
+        {
+          "description": "Принтер",
+          "quantity": 2,
+          "unit_price": 320000,
+          "total": 640000
+        }
+      ],
+      "grand_total": 920000,
+      "category": "Мэдээллийн технологийн зардал",
+      "category_id": 3,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_099.pdf",
+      "invoice_number": "99",
+      "vendor_name": "Демо Компани-6",
+      "bank_name": "Демо Банк 2",
+      "account_number": "1166778899",
+      "email": "billing@demo6.mn",
+      "invoice_date": "2026-03-01",
+      "due_date": "2026-03-16",
+      "line_items": [
+        {
+          "description": "Тагт, цонх засвар",
+          "quantity": 2,
+          "unit_price": 85000,
+          "total": 170000
+        },
+        {
+          "description": "Хаалга, цоож засвар",
+          "quantity": 1,
+          "unit_price": 65000,
+          "total": 65000
+        }
+      ],
+      "grand_total": 235000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    },
+    {
+      "filename": "invoice_100.pdf",
+      "invoice_number": "100",
+      "vendor_name": "Демо Компани-7",
+      "bank_name": "Демо Банк 2",
+      "account_number": "5004455667",
+      "email": "finance@demo7.mn",
+      "invoice_date": "2026-03-18",
+      "due_date": "2026-04-02",
+      "line_items": [
+        {
+          "description": "Цэвэрлэгээ (сарын)",
+          "quantity": 1,
+          "unit_price": 200000,
+          "total": 200000
+        }
+      ],
+      "grand_total": 200000,
+      "category": "Засвар үйлчилгээ",
+      "category_id": 7,
+      "issues": [],
+      "decision": "AUTO_POST",
+      "decision_reasons": [
+        "Registered vendor with clean history, no issues detected"
+      ],
+      "file_type": "PDF",
+      "is_handwritten": false
+    }
+  ],
+  "summary": {
+    "total_invoices": 100,
+    "auto_post_count": 72,
+    "human_approval_count": 0,
+    "deny_count": 28,
+    "issue_breakdown": {
+      "BANK_ACCOUNT_MISMATCH": 8,
+      "INVALID_DATE": 5,
+      "AMOUNT_MISMATCH": 5,
+      "UNREGISTERED_VENDOR": 5,
+      "DUPLICATE": 5
+    },
+    "total_amount": 66110000,
+    "denied_amount": 28210000,
+    "jpg_count": 15,
+    "png_count": 4,
+    "pdf_count": 81,
+    "handwritten_count": 15,
+    "duplicate_count": 5,
+    "unregistered_vendor_count": 5,
+    "amount_mismatch_count": 5,
+    "bank_mismatch_count": 8,
+    "invalid_date_count": 5
+  },
+  "qa_answers": {
+    "Нийт хэдэн invoice байна вэ?": "Нийт 100 invoice байна.",
+    "Хэдэн invoice зөв invoice вэ?": "72 invoice нь зөв (AUTO_POST). Эдгээр нь бүртгэлтэй vendor-тай, математик тооцоолол зөв, огноо хүчинтэй, банкны мэдээлэл тохирсон, давхардалгүй invoice-ууд.",
+    "Хэдэн invoice сэжигтэй вэ?": "28 invoice сэжигтэй (DENY) болсон. Шалтгаан: BANK_ACCOUNT_MISMATCH (8), AMOUNT_MISMATCH (5), INVALID_DATE (5), UNREGISTERED_VENDOR (5), DUPLICATE (5).",
+    "Хэдэн invoice duplicate вэ?": "5 invoice duplicate байна: invoice_025.pdf, invoice_035.pdf, invoice_038.pdf, invoice_047.pdf, invoice_057.pdf.",
+    "Хэдэн invoice математик тооцооллын алдаатай вэ?": "5 invoice математик тооцооллын алдаатай: invoice_007.jpg, invoice_028.pdf, invoice_064.pdf, invoice_080.pdf, invoice_094.pdf.",
+    "Хэдэн invoice бүртгэлгүй vendor-той вэ?": "5 invoice бүртгэлгүй vendor-той: invoice_010.jpg (Демо Компани-12), invoice_026.pdf (Демо Компани-11), invoice_041.pdf (Демо Компани-11), invoice_088.pdf (Демо Компани-12), invoice_092.pdf (Демо Компани-11).",
+    "Хэдэн invoice буруу огноотой вэ?": "5 invoice буруу огноотой: invoice_005.jpg, invoice_022.pdf, invoice_034.pdf, invoice_066.pdf, invoice_087.pdf.",
+    "Хэдэн invoice банкны мэдээллийн зөрүүтэй вэ?": "8 invoice банкны мэдээллийн зөрүүтэй: invoice_002.jpg, invoice_003.jpg, invoice_013.jpg, invoice_015.jpg, invoice_039.pdf, invoice_053.pdf, invoice_056.pdf, invoice_075.pdf.",
+    "Хэдэн invoice зураг хэлбэртэй вэ?": "19 invoice зураг хэлбэртэй (15 JPG + 4 PNG).",
+    "Хэдэн invoice гар бичмэлтэй зураг вэ?": "15 invoice гар бичмэлтэй зураг (JPG формат, гар утсаар зурагдсан).",
+    "Хэдэн invoice HUMAN_APPROVAL авах ёстой вэ?": "0 invoice HUMAN_APPROVAL авах ёстой.",
+    "Хэдэн invoice DENY болох ёстой вэ?": "28 invoice DENY болсон."
+  }
+}
