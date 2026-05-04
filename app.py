@@ -161,7 +161,29 @@ def compact_results(results):
         })
     return compact
 
-def normalized_invoice_key(record):
+def normalized_line_items(record):
+    items = []
+    for item in record.get("line_items") or []:
+        desc = re.sub(r"\s+", " ", (item.get("description") or "").strip().lower())
+        items.append((
+            desc,
+            item.get("quantity") or 0,
+            item.get("unit_price") or 0,
+            item.get("total") or 0,
+        ))
+    return tuple(sorted(items))
+
+def normalized_invoice_fingerprint(record):
+    vendor = re.sub(r"\s*[-–—]\s*", "-", (record.get("vendor_name") or "").strip().lower())
+    invoice_date = (record.get("invoice_date") or "").replace("/", "-")
+    total = record.get("grand_total") or 0
+    account = (record.get("account_number") or "").strip()
+    line_items = normalized_line_items(record)
+    if not vendor or not invoice_date or not total:
+        return None
+    return vendor, invoice_date, total, account, line_items
+
+def normalized_business_key(record):
     vendor = re.sub(r"\s*[-–—]\s*", "-", (record.get("vendor_name") or "").strip().lower())
     invoice_date = (record.get("invoice_date") or "").replace("/", "-")
     total = record.get("grand_total") or 0
@@ -170,12 +192,16 @@ def normalized_invoice_key(record):
     return vendor, invoice_date, total
 
 def find_duplicate_result(extracted):
-    key = normalized_invoice_key(extracted)
-    if not key:
+    fingerprint = normalized_invoice_fingerprint(extracted)
+    business_key = normalized_business_key(extracted)
+    if not business_key:
         return None
     for existing in st.session_state.get("invoice_results", []):
-        if normalized_invoice_key(existing) == key:
-            return existing
+        if fingerprint and normalized_invoice_fingerprint(existing) == fingerprint:
+            return existing, "exact_content"
+    for existing in st.session_state.get("invoice_results", []):
+        if normalized_business_key(existing) == business_key:
+            return existing, "same_vendor_date_total"
     return None
 
 def duplicate_match_payload(record):
@@ -212,11 +238,17 @@ def validate(data):
     if (data.get("invoice_date") or "").replace("/","-").endswith("02-30"): issues.append({"type":"INVALID_DATE","detail":"Feb 30 does not exist"})
     existing_duplicate = find_duplicate_result(data)
     if existing_duplicate:
-        matched = duplicate_match_payload(existing_duplicate)
+        existing_record, match_type = existing_duplicate
+        matched = duplicate_match_payload(existing_record)
         label = matched.get("filename") or f"invoice #{matched.get('invoice_number')}"
+        if match_type == "exact_content":
+            detail = f"Өмнө хадгалсан {label} нэхэмжлэхтэй яг ижил агуулгатай байна: vendor + огноо + дүн + данс + мөрүүд ижил"
+        else:
+            detail = f"Өмнө хадгалсан {label} нэхэмжлэхтэй давхцах магадлалтай: vendor + огноо + дүн ижил"
         issues.append({
             "type":"DUPLICATE",
-            "detail":f"Өмнө хадгалсан {label} нэхэмжлэхтэй давхцаж байна: vendor + огноо + дүн ижил",
+            "detail":detail,
+            "match_type":match_type,
             "matched_invoice": matched,
         })
     else:
