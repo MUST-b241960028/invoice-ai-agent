@@ -356,7 +356,7 @@ st.markdown("""
 <style>
     .stApp { background: #ffffff; }
     [data-testid="stSidebar"] { background: #f7f7f8; border-right: 1px solid #e5e7eb; }
-    .block-container { max-width: 1060px; padding-top: 1.25rem; padding-bottom: 5rem; }
+    .block-container { max-width: 1060px; padding-top: 1.25rem; padding-bottom: 8.5rem; }
     .topbar { display: flex; align-items: center; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid #e5e7eb; margin-bottom: 16px; }
     .brand { width: 34px; height: 34px; border-radius: 8px; background: #111827; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
     .topbar h1 { margin: 0; font-size: 24px; letter-spacing: 0; }
@@ -366,6 +366,28 @@ st.markdown("""
     .metric-card .label { color: #6b7280; font-size: 12px; margin-bottom: 5px; }
     .metric-card .value { color: #111827; font-size: 22px; font-weight: 700; }
     [data-testid="stChatMessageContent"] { border: 1px solid #e5e7eb; border-radius: 10px; padding: 14px 16px; background: #fff; }
+    [data-testid="stChatInput"] {
+        position: fixed;
+        left: 322px;
+        right: max(24px, calc((100vw - 320px - 1060px) / 2));
+        bottom: 0;
+        max-width: 1060px;
+        padding: 12px 0 18px;
+        background: linear-gradient(180deg, rgba(255,255,255,0), #fff 24%, #fff 100%);
+        z-index: 999;
+    }
+    [data-testid="stChatInput"] > div {
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        box-shadow: 0 12px 30px rgba(17, 24, 39, 0.08);
+    }
+    @media (max-width: 900px) {
+        [data-testid="stChatInput"] {
+            left: 16px;
+            right: 16px;
+            max-width: none;
+        }
+    }
     .stButton > button { border-radius: 8px; border: 1px solid #e5e7eb; background: #fff; color: #111827; font-weight: 500; }
     .stButton > button:hover { border-color: #c7cbd1; background: #f9fafb; color: #111827; }
 </style>
