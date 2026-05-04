@@ -7,7 +7,7 @@ import streamlit as st, anthropic, base64, json, sqlite3, re, os, fitz
 from datetime import datetime
 from pathlib import Path
 
-st.set_page_config(page_title="🧾 AI Invoice Agent", page_icon="🧾", layout="wide")
+st.set_page_config(page_title="AI Invoice Agent", page_icon="🧾", layout="wide")
 
 # API KEY
 api_key = os.environ.get("ANTHROPIC_API_KEY", "")
@@ -149,126 +149,173 @@ def process(fb,ft):
     text=resp.content[0].text.strip().replace("```json","").replace("```","").strip()
     return json.loads(text)
 
-SUMMARY={"total":100,"auto":72,"deny":28,"approval":0,"issues":{"BANK_ACCOUNT_MISMATCH":8,"AMOUNT_MISMATCH":5,"INVALID_DATE":5,"UNREGISTERED_VENDOR":5,"DUPLICATE":5},"jpg":15,"png":4,"pdf":81,"denied":["002","003","005","007","010","013","015","022","025","026","028","034","035","038","039","041","047","053","056","057","064","066","075","080","087","088","092","094"],"details":{"002":"Демо Компани-10, BANK_ACCOUNT_MISMATCH (1002033445 vs 1002233445), 2,920,000₮","003":"Демо Компани-9, BANK_ACCOUNT_MISMATCH, 2,920,000₮","005":"Демо Компани-9, INVALID_DATE (due<invoice), 150,000₮","007":"Демо Компани-8, AMOUNT_MISMATCH (2.5M≠2.51M), 2,510,000₮","010":"Демо Компани-12, UNREGISTERED_VENDOR, 300,000₮","013":"Демо Компани-8, BANK_ACCOUNT_MISMATCH, 550,000₮","015":"Демо Компани-8, BANK_ACCOUNT_MISMATCH, 285,000₮","022":"Демо Компани-1, INVALID_DATE (Feb 30), 1,200,000₮","025":"Демо Компани-8, DUPLICATE, 450,000₮","026":"Демо Компани-11, UNREGISTERED_VENDOR, 350,000₮","028":"Демо Компани-5, AMOUNT_MISMATCH, 190,000₮","034":"Демо Компани-2, INVALID_DATE, 600,000₮","035":"Демо Компани-2, DUPLICATE, 855,000₮","038":"Демо Компани-7, DUPLICATE, 170,000₮","039":"Демо Компани-10, BANK_ACCOUNT_MISMATCH, 2,920,000₮","041":"Демо Компани-11, UNREGISTERED_VENDOR, 200,000₮","047":"Демо Компани-1, DUPLICATE, 190,000₮","053":"Демо Компани-9, BANK_ACCOUNT_MISMATCH, 190,000₮","056":"Демо Компани-9, BANK_ACCOUNT_MISMATCH, 300,000₮","057":"Демо Компани-7, DUPLICATE, 390,000₮","064":"Демо Компани-2, AMOUNT_MISMATCH, 220,000₮","066":"Демо Компани-1, INVALID_DATE (Feb 30), 2,920,000₮","075":"Демо Компани-2, BANK_ACCOUNT_MISMATCH, 760,000₮","080":"Демо Компани-6, AMOUNT_MISMATCH, 2,930,000₮","087":"Демо Компани-5, INVALID_DATE (Feb 30), 350,000₮","088":"Демо Компани-12, UNREGISTERED_VENDOR, 2,920,000₮","092":"Демо Компани-11, UNREGISTERED_VENDOR, 130,000₮","094":"Демо Компани-9, AMOUNT_MISMATCH, 340,000₮"}}
-
 if "invoice_results" not in st.session_state:
     st.session_state.invoice_results = load_initial_results()
+if "processed_uploads" not in st.session_state:
+    st.session_state.processed_uploads = []
+if "ch" not in st.session_state:
+    st.session_state.ch = [{
+        "role": "assistant",
+        "content": "Сайн байна уу. Ask me about invoice results, DENY reasons, duplicates, math errors, vendors, or report sections."
+    }]
 
-# UI
-st.title("🧾 AI Invoice Processing Agent")
-st.caption("AI Legends 2026 | Claude Sonnet 4 Vision + Reasoning")
-tab1,tab2,tab3=st.tabs(["📤 Upload & Analyze","📊 100 Invoice Results","💬 Q&A Chat"])
-
-with tab1:
-    st.subheader("Invoice upload → AI боловсруулалт")
-    files=st.file_uploader("JPG / PNG / PDF invoice", type=["jpg","jpeg","png","pdf"], accept_multiple_files=True)
-    if files and st.button("🚀 Боловсруулах",type="primary"):
-        for uf in files:
-            with st.expander(f"📄 {uf.name}",expanded=True):
-                fb=uf.read(); c1,c2=st.columns([1,2])
-                with c1:
-                    if uf.type=="application/pdf":
-                        doc=fitz.open(stream=fb,filetype="pdf"); st.image(doc[0].get_pixmap(dpi=120).tobytes("png")); doc.close()
-                    else: st.image(fb)
-                with c2:
-                    with st.spinner("Claude Vision уншиж байна..."):
-                        ext=process(fb,uf.type)
-                    issues,decision,vendor=validate(ext); cat=classify(ext,vendor)
-                    file_ext=Path(uf.name).suffix.lower().lstrip(".")
-                    rec={**ext,"filename":uf.name,"category":cat,"decision":decision,"issues":issues,"file_type":file_ext.upper(),"is_handwritten":file_ext in ["jpg","jpeg"],"decision_reasons":[issue_detail(i) for i in issues] or ["Registered vendor, all checks passed"]}
-                    st.session_state.invoice_results.append(rec)
-                    st.markdown(f"**Vendor:** {ext.get('vendor_name','?')} | **Дүн:** {(ext.get('grand_total') or 0):,}₮")
-                    st.markdown(f"**Огноо:** {ext.get('invoice_date','?')} → {ext.get('due_date','?')} | **Ангилал:** {cat}")
-                    if ext.get("line_items"):
-                        for li in ext["line_items"]: st.markdown(f"- {li.get('description')} {li.get('quantity')}×{(li.get('unit_price') or 0):,}={( li.get('total') or 0):,}₮")
-                    if issues:
-                        for iss in issues: st.error(f"⛔ {iss['type']}: {iss['detail']}")
-                    else: st.success("✅ Бүх шалгалт амжилттай")
-                    colors={"AUTO_POST":"green","DENY":"red","HUMAN_APPROVAL":"orange"}
-                    st.markdown(f"### :{colors[decision]}[**{decision}**]")
-
-with tab2:
-    s=summarize_results(st.session_state.invoice_results)
-    c1,c2,c3,c4=st.columns(4)
-    c1.metric("Нийт",s["total"]); c2.metric("✅ AUTO_POST",s["auto"]); c3.metric("❌ DENY",s["deny"]); c4.metric("⚠️ APPROVAL",s["approval"])
-    st.divider()
-    st.markdown("**🔍 Зөрчлийн тархалт:**")
-    cols=st.columns(5)
-    for i,(k,v) in enumerate(s["issues"].items()):
-        cols[i%5].metric(k,v)
-    st.divider()
-    co1,co2=st.columns(2)
-    with co1:
-        st.markdown("**📄 Файлын төрөл:**")
-        st.markdown(f"- JPG/JPEG: **{s['jpg']}**\n- PNG: **{s['png']}**\n- PDF: **{s['pdf']}**\n- Гар бичмэл: **{s['handwritten']}**")
-        st.markdown(f"**Нийт дүн:** {s['total_amount']:,}₮  \n**DENY дүн:** {s['denied_amount']:,}₮")
-    with co2:
-        st.markdown("**❌ DENY болсон invoices:**")
-        denied=[r for r in st.session_state.invoice_results if r.get("decision")=="DENY"]
-        for r in denied:
-            issue_names=", ".join(issue_type(i) for i in r.get("issues",[])) or "Unknown"
-            st.markdown(f"- **{r.get('filename')}**: {r.get('vendor_name','?')}, {issue_names}, {(r.get('grand_total') or 0):,}₮")
-
-with tab3:
-    st.subheader("💬 Invoice Q&A — Claude AI")
-    presets=["Нийт хэдэн invoice байна?","Хэдэн invoice DENY болсон?","Duplicate invoice хэд?","Бүртгэлгүй vendor хэд?","Банкны зөрүүтэй хэд?","Invoice 007 яагаад deny?","Invoice 025 duplicate мөн үү?","Invoice 007 математик зөв үү?"]
-    cols=st.columns(4)
-    for i,p in enumerate(presets):
-        if cols[i%4].button(p,key=f"p{i}",use_container_width=True): st.session_state["qi"]=p
-    if "ch" not in st.session_state: st.session_state.ch=[]
-    for m in st.session_state.ch:
-        with st.chat_message(m["role"]): st.write(m["content"])
-    q=st.chat_input("Асуулт бичнэ үү...") or st.session_state.pop("qi",None)
-    if q:
-        st.session_state.ch.append({"role":"user","content":q})
-        with st.chat_message("user"): st.write(q)
-        live_summary=summarize_results(st.session_state.invoice_results)
-        live_results=compact_results(st.session_state.invoice_results)
-        ctx=f"""You are an AI Invoice Agent for a Mongolian invoice-processing demo.
-
+def build_chat_context():
+    return f"""You are an AI Invoice Agent for a Mongolian invoice-processing demo.
 Use ONLY the data below. Answer in the same language as the question.
+Support aggregate analytics, invoice-specific fact-checks, and report/submission sections.
 
-You can answer aggregate questions:
-- total invoices
-- correct invoices / AUTO_POST
-- suspicious invoices / DENY
-- duplicates
-- math/amount mismatches
-- unregistered vendors
-- invalid dates
-- bank/account mismatches
-- image file counts
-- handwritten image counts
-- HUMAN_APPROVAL count
-- DENY count
+Aggregate topics: total invoices, AUTO_POST, DENY, HUMAN_APPROVAL, duplicates, amount mismatch,
+unregistered vendors, invalid dates, bank/account mismatches, image counts, handwritten counts.
 
-You can answer invoice-specific fact-check questions:
-- final decision
-- duplicate or not
-- vendor name
-- category
-- due date
-- whether bank account is registered/matching
-- why denied
-- issue/error types
-- whether human approval is needed
-- whether math calculation is correct
-
-Report/submission sections to support when asked:
-- solution overview
-- model architecture and agent workflow
-- data processing and validation strategy
-- evaluation results
-- key conclusions, limitations, and future improvements
+Fact-check topics: final decision, duplicate status, vendor, category, due date, bank account match,
+deny reason, issue types, human approval, math correctness.
 
 Summary:
-{json.dumps(live_summary,ensure_ascii=False,indent=2)}
+{json.dumps(summarize_results(st.session_state.invoice_results),ensure_ascii=False,indent=2)}
 
 Invoice records:
-{json.dumps(live_results,ensure_ascii=False,indent=2)}
+{json.dumps(compact_results(st.session_state.invoice_results),ensure_ascii=False,indent=2)}
 """
-        with st.chat_message("assistant"):
-            with st.spinner("Хариулж байна..."):
-                resp=client.messages.create(model="claude-sonnet-4-20250514",max_tokens=800,messages=[{"role":"user","content":ctx+"\n\nQ: "+q}])
-                ans=resp.content[0].text
-            st.write(ans); st.session_state.ch.append({"role":"assistant","content":ans})
+
+def ask_agent(question):
+    resp=client.messages.create(model="claude-sonnet-4-20250514",max_tokens=900,messages=[{"role":"user","content":build_chat_context()+"\n\nQ: "+question}])
+    return resp.content[0].text
+
+def render_invoice_result(record):
+    issue_names=", ".join(issue_type(i) for i in record.get("issues",[])) or "None"
+    return f"""**{record.get('filename','uploaded invoice')}**
+
+Vendor: {record.get('vendor_name') or '?'}  
+Amount: {(record.get('grand_total') or 0):,}₮  
+Date: {record.get('invoice_date') or '?'} -> {record.get('due_date') or '?'}  
+Category: {record.get('category') or '?'}  
+Decision: **{record.get('decision')}**  
+Issues: {issue_names}
+"""
+
+def process_upload(uploaded_file):
+    fb=uploaded_file.read()
+    ext=process(fb,uploaded_file.type)
+    issues,decision,vendor=validate(ext)
+    cat=classify(ext,vendor)
+    file_ext=Path(uploaded_file.name).suffix.lower().lstrip(".")
+    record={**ext,"filename":uploaded_file.name,"category":cat,"decision":decision,"issues":issues,"file_type":file_ext.upper(),"is_handwritten":file_ext in ["jpg","jpeg"],"decision_reasons":[issue_detail(i) for i in issues] or ["Registered vendor, all checks passed"]}
+    st.session_state.invoice_results.append(record)
+    st.session_state.processed_uploads.insert(0,record)
+    st.session_state.ch.append({"role":"assistant","content":render_invoice_result(record)})
+    return record
+
+# UI
+st.markdown("""
+<style>
+    .stApp { background: #ffffff; }
+    [data-testid="stSidebar"] { background: #f7f7f8; border-right: 1px solid #e5e7eb; }
+    .block-container { max-width: 1060px; padding-top: 1.25rem; padding-bottom: 5rem; }
+    .topbar { display: flex; align-items: center; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid #e5e7eb; margin-bottom: 16px; }
+    .brand { width: 34px; height: 34px; border-radius: 8px; background: #111827; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+    .topbar h1 { margin: 0; font-size: 24px; letter-spacing: 0; }
+    .topbar p { margin: 2px 0 0; color: #6b7280; font-size: 13px; }
+    .metric-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 18px; }
+    .metric-card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 14px; background: #fff; }
+    .metric-card .label { color: #6b7280; font-size: 12px; margin-bottom: 5px; }
+    .metric-card .value { color: #111827; font-size: 22px; font-weight: 700; }
+    [data-testid="stChatMessageContent"] { border: 1px solid #e5e7eb; border-radius: 10px; padding: 14px 16px; background: #fff; }
+    .stButton > button { border-radius: 8px; border: 1px solid #e5e7eb; background: #fff; color: #111827; font-weight: 500; }
+    .stButton > button:hover { border-color: #c7cbd1; background: #f9fafb; color: #111827; }
+</style>
+""", unsafe_allow_html=True)
+
+s=summarize_results(st.session_state.invoice_results)
+
+with st.sidebar:
+    st.markdown("### Invoice Agent")
+    st.caption("Professional invoice review workspace")
+    st.divider()
+    st.metric("Invoices", s["total"])
+    st.metric("AUTO_POST", s["auto"])
+    st.metric("DENY", s["deny"])
+    st.metric("HUMAN_APPROVAL", s["approval"])
+    st.divider()
+    st.caption("Upload invoices")
+    files=st.file_uploader("JPG, PNG, PDF", type=["jpg","jpeg","png","pdf"], accept_multiple_files=True, label_visibility="collapsed")
+    if st.button("Analyze", type="primary", use_container_width=True, disabled=not files):
+        for uf in files:
+            with st.spinner(f"Analyzing {uf.name}"):
+                process_upload(uf)
+        st.rerun()
+    st.divider()
+    st.caption("Suggested questions")
+    for i,p in enumerate(["Нийт хэдэн invoice байна?","Хэдэн invoice DENY болсон?","Duplicate invoice хэд?","Invoice 007 яагаад deny?","Invoice 025 duplicate мөн үү?","Invoice 094 математик зөв үү?"]):
+        if st.button(p,key=f"preset_{i}",use_container_width=True):
+            st.session_state["qi"]=p
+            st.rerun()
+
+st.markdown("""
+<div class="topbar">
+    <div class="brand">AI</div>
+    <div><h1>AI Invoice Agent</h1><p>Chat with processed invoice results, run fact-checks, and analyze new files.</p></div>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown(f"""
+<div class="metric-strip">
+    <div class="metric-card"><div class="label">Total invoices</div><div class="value">{s["total"]}</div></div>
+    <div class="metric-card"><div class="label">Auto posted</div><div class="value">{s["auto"]}</div></div>
+    <div class="metric-card"><div class="label">Denied</div><div class="value">{s["deny"]}</div></div>
+    <div class="metric-card"><div class="label">Denied amount</div><div class="value">{s["denied_amount"]:,}₮</div></div>
+</div>
+""", unsafe_allow_html=True)
+
+chat_tab, uploads_tab, results_tab = st.tabs(["Chat", "Uploaded invoices", "Results"])
+
+with chat_tab:
+    for m in st.session_state.ch:
+        with st.chat_message(m["role"], avatar="AI" if m["role"]=="assistant" else "ME"):
+            st.markdown(m["content"])
+    q=st.chat_input("Ask about invoices, decisions, vendors, errors, or report sections") or st.session_state.pop("qi",None)
+    if q:
+        st.session_state.ch.append({"role":"user","content":q})
+        with st.chat_message("user", avatar="ME"):
+            st.markdown(q)
+        with st.chat_message("assistant", avatar="AI"):
+            with st.spinner("Thinking"):
+                ans=ask_agent(q)
+            st.markdown(ans)
+        st.session_state.ch.append({"role":"assistant","content":ans})
+
+with uploads_tab:
+    if not st.session_state.processed_uploads:
+        st.info("No invoices uploaded in this session yet. Use the sidebar upload control.")
+    for r in st.session_state.processed_uploads:
+        with st.expander(f"{r.get('filename')} · {r.get('decision')}", expanded=False):
+            c1,c2,c3=st.columns(3)
+            c1.metric("Vendor", r.get("vendor_name") or "?")
+            c2.metric("Amount", f"{(r.get('grand_total') or 0):,}₮")
+            c3.metric("Category", r.get("category") or "?")
+            st.markdown(f"**Date:** {r.get('invoice_date') or '?'} -> {r.get('due_date') or '?'}")
+            if r.get("line_items"):
+                st.dataframe(r["line_items"], use_container_width=True, hide_index=True)
+            issues=r.get("issues") or []
+            if issues:
+                for issue in issues:
+                    st.error(f"{issue_type(issue)}: {issue_detail(issue)}")
+            else:
+                st.success("All validation checks passed.")
+
+with results_tab:
+    c1,c2=st.columns([1,1])
+    with c1:
+        st.subheader("Issue breakdown")
+        st.dataframe([{"Issue":k,"Count":v} for k,v in sorted(s["issues"].items())], use_container_width=True, hide_index=True)
+        st.subheader("File types")
+        st.dataframe([
+            {"Type":"JPG/JPEG","Count":s["jpg"]},
+            {"Type":"PNG","Count":s["png"]},
+            {"Type":"PDF","Count":s["pdf"]},
+            {"Type":"Handwritten","Count":s["handwritten"]},
+        ], use_container_width=True, hide_index=True)
+    with c2:
+        st.subheader("Denied invoices")
+        denied=[r for r in st.session_state.invoice_results if r.get("decision")=="DENY"]
+        rows=[{"Invoice":r.get("filename"),"Vendor":r.get("vendor_name"),"Issues":", ".join(issue_type(i) for i in r.get("issues",[])),"Amount":r.get("grand_total")} for r in denied]
+        st.dataframe(rows, use_container_width=True, hide_index=True)
