@@ -47,7 +47,7 @@ jobs:
               raise SystemExit(f"Missing required files: {missing}")
 
           data = json.loads(Path("full_results.json").read_text(encoding="utf-8"))
-          assert len(data["results"]) == 100, "Expected 100 demo invoice results"
+          assert len(data["results"]) >= 100, "Expected at least 100 invoice results"
           eval_files = list(Path("dataset/eval_agent/eval_agent").glob("invoice_*.*"))
           assert len(eval_files) == 100, "Expected 100 eval_agent invoices"
 

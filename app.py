@@ -3,11 +3,11 @@ AI Invoice Processing Agent — AI Legends 2026
 Run: streamlit run app.py
 Deploy: streamlit.io → add ANTHROPIC_API_KEY to secrets
 """
-import streamlit as st, anthropic, base64, json, sqlite3, re, os, fitz
+import streamlit as st, anthropic, base64, csv, json, sqlite3, re, os, fitz
 from datetime import datetime
 from pathlib import Path
 
-st.set_page_config(page_title="AI Invoice Agent", page_icon="🧾", layout="wide")
+st.set_page_config(page_title="AI Нэхэмжлэхийн Агент", page_icon="🧾", layout="wide")
 
 # API KEY
 api_key = os.environ.get("ANTHROPIC_API_KEY", "")
@@ -30,6 +30,7 @@ def load_db():
 master_db = load_db()
 
 RESULTS_PATH = Path(__file__).parent / "full_results.json"
+RESULTS_CSV_PATH = Path(__file__).parent / "invoice_results.csv"
 
 @st.cache_data
 def load_initial_results():
@@ -64,6 +65,73 @@ def summarize_results(results):
         "total_amount": sum(r.get("grand_total") or 0 for r in results),
         "denied_amount": sum(r.get("grand_total") or 0 for r in denied),
     }
+
+def full_summary(results):
+    s = summarize_results(results)
+    issues = s["issues"]
+    return {
+        "total_invoices": s["total"],
+        "auto_post_count": s["auto"],
+        "human_approval_count": s["approval"],
+        "deny_count": s["deny"],
+        "issue_breakdown": issues,
+        "total_amount": s["total_amount"],
+        "denied_amount": s["denied_amount"],
+        "jpg_count": s["jpg"],
+        "png_count": s["png"],
+        "pdf_count": s["pdf"],
+        "handwritten_count": s["handwritten"],
+        "duplicate_count": issues.get("DUPLICATE", 0),
+        "unregistered_vendor_count": issues.get("UNREGISTERED_VENDOR", 0),
+        "amount_mismatch_count": issues.get("AMOUNT_MISMATCH", 0),
+        "bank_mismatch_count": issues.get("BANK_ACCOUNT_MISMATCH", 0),
+        "invalid_date_count": issues.get("INVALID_DATE", 0),
+    }
+
+def line_items_total(record):
+    return sum((li.get("total") or 0) for li in record.get("line_items") or [])
+
+def persist_results(results):
+    output = {"results": results, "summary": full_summary(results)}
+    if RESULTS_PATH.exists():
+        try:
+            existing = json.loads(RESULTS_PATH.read_text(encoding="utf-8"))
+            if "qa_answers" in existing:
+                output["qa_answers"] = existing["qa_answers"]
+        except Exception:
+            pass
+    RESULTS_PATH.write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    fieldnames = [
+        "Filename", "Invoice#", "Vendor", "Bank", "Account", "Email",
+        "Invoice_Date", "Due_Date", "Grand_Total", "Category", "Decision",
+        "Issues", "Issue_Details", "File_Type", "Handwritten",
+        "Line_Items_Count", "Line_Items_Total"
+    ]
+    with RESULTS_CSV_PATH.open("w", encoding="utf-8-sig", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        for r in results:
+            issues = r.get("issues") or []
+            writer.writerow({
+                "Filename": r.get("filename"),
+                "Invoice#": r.get("invoice_number"),
+                "Vendor": r.get("vendor_name"),
+                "Bank": r.get("bank_name"),
+                "Account": r.get("account_number"),
+                "Email": r.get("email"),
+                "Invoice_Date": r.get("invoice_date"),
+                "Due_Date": r.get("due_date"),
+                "Grand_Total": r.get("grand_total"),
+                "Category": r.get("category"),
+                "Decision": r.get("decision"),
+                "Issues": ", ".join(issue_type(i) for i in issues),
+                "Issue_Details": " | ".join(issue_detail(i) for i in issues),
+                "File_Type": r.get("file_type"),
+                "Handwritten": r.get("is_handwritten"),
+                "Line_Items_Count": len(r.get("line_items") or []),
+                "Line_Items_Total": line_items_total(r),
+            })
 
 def compact_results(results):
     compact = []
@@ -156,7 +224,7 @@ if "processed_uploads" not in st.session_state:
 if "ch" not in st.session_state:
     st.session_state.ch = [{
         "role": "assistant",
-        "content": "Сайн байна уу. Ask me about invoice results, DENY reasons, duplicates, math errors, vendors, or report sections."
+        "content": "Сайн байна уу. Нэхэмжлэхийн үр дүн, DENY шалтгаан, давхардал, тооцооллын алдаа, vendor эсвэл тайлангийн хэсгүүдийн талаар асуугаарай."
     }]
 
 def build_chat_context():
@@ -182,15 +250,15 @@ def ask_agent(question):
     return resp.content[0].text
 
 def render_invoice_result(record):
-    issue_names=", ".join(issue_type(i) for i in record.get("issues",[])) or "None"
+    issue_names=", ".join(issue_type(i) for i in record.get("issues",[])) or "Байхгүй"
     return f"""**{record.get('filename','uploaded invoice')}**
 
 Vendor: {record.get('vendor_name') or '?'}  
-Amount: {(record.get('grand_total') or 0):,}₮  
-Date: {record.get('invoice_date') or '?'} -> {record.get('due_date') or '?'}  
-Category: {record.get('category') or '?'}  
-Decision: **{record.get('decision')}**  
-Issues: {issue_names}
+Дүн: {(record.get('grand_total') or 0):,}₮  
+Огноо: {record.get('invoice_date') or '?'} -> {record.get('due_date') or '?'}  
+Ангилал: {record.get('category') or '?'}  
+Шийдвэр: **{record.get('decision')}**  
+Алдаа: {issue_names}
 """
 
 def process_upload(uploaded_file):
@@ -203,6 +271,7 @@ def process_upload(uploaded_file):
     st.session_state.invoice_results.append(record)
     st.session_state.processed_uploads.insert(0,record)
     st.session_state.ch.append({"role":"assistant","content":render_invoice_result(record)})
+    persist_results(st.session_state.invoice_results)
     return record
 
 # UI
@@ -228,24 +297,24 @@ st.markdown("""
 s=summarize_results(st.session_state.invoice_results)
 
 with st.sidebar:
-    st.markdown("### Invoice Agent")
-    st.caption("Professional invoice review workspace")
+    st.markdown("### Нэхэмжлэхийн Агент")
+    st.caption("Мэргэжлийн нэхэмжлэх шалгах орчин")
     st.divider()
-    st.metric("Invoices", s["total"])
+    st.metric("Нэхэмжлэх", s["total"])
     st.metric("AUTO_POST", s["auto"])
     st.metric("DENY", s["deny"])
     st.metric("HUMAN_APPROVAL", s["approval"])
     st.divider()
-    st.caption("Upload invoices")
+    st.caption("Нэхэмжлэх оруулах")
     files=st.file_uploader("JPG, PNG, PDF", type=["jpg","jpeg","png","pdf"], accept_multiple_files=True, label_visibility="collapsed")
-    if st.button("Analyze", type="primary", use_container_width=True, disabled=not files):
+    if st.button("Шинжлэх", type="primary", use_container_width=True, disabled=not files):
         for uf in files:
-            with st.spinner(f"Analyzing {uf.name}"):
+            with st.spinner(f"{uf.name} файлыг шинжилж байна"):
                 process_upload(uf)
         st.rerun()
     st.divider()
-    st.caption("Suggested questions")
-    for i,p in enumerate(["Нийт хэдэн invoice байна?","Хэдэн invoice DENY болсон?","Duplicate invoice хэд?","Invoice 007 яагаад deny?","Invoice 025 duplicate мөн үү?","Invoice 094 математик зөв үү?"]):
+    st.caption("Жишээ асуултууд")
+    for i,p in enumerate(["Нийт хэдэн нэхэмжлэх байна?","Хэдэн invoice DENY болсон?","Duplicate invoice хэд?","Invoice 007 яагаад deny?","Invoice 025 duplicate мөн үү?","Invoice 094 математик зөв үү?"]):
         if st.button(p,key=f"preset_{i}",use_container_width=True):
             st.session_state["qi"]=p
             st.rerun()
@@ -253,46 +322,46 @@ with st.sidebar:
 st.markdown("""
 <div class="topbar">
     <div class="brand">AI</div>
-    <div><h1>AI Invoice Agent</h1><p>Chat with processed invoice results, run fact-checks, and analyze new files.</p></div>
+    <div><h1>AI Нэхэмжлэхийн Агент</h1><p>Боловсруулсан нэхэмжлэхүүдтэй чатлаж, баримт шалгаж, шинэ файл шинжилнэ.</p></div>
 </div>
 """, unsafe_allow_html=True)
 
 st.markdown(f"""
 <div class="metric-strip">
-    <div class="metric-card"><div class="label">Total invoices</div><div class="value">{s["total"]}</div></div>
-    <div class="metric-card"><div class="label">Auto posted</div><div class="value">{s["auto"]}</div></div>
-    <div class="metric-card"><div class="label">Denied</div><div class="value">{s["deny"]}</div></div>
-    <div class="metric-card"><div class="label">Denied amount</div><div class="value">{s["denied_amount"]:,}₮</div></div>
+    <div class="metric-card"><div class="label">Нийт нэхэмжлэх</div><div class="value">{s["total"]}</div></div>
+    <div class="metric-card"><div class="label">Автомат бүртгэл</div><div class="value">{s["auto"]}</div></div>
+    <div class="metric-card"><div class="label">Татгалзсан</div><div class="value">{s["deny"]}</div></div>
+    <div class="metric-card"><div class="label">Татгалзсан дүн</div><div class="value">{s["denied_amount"]:,}₮</div></div>
 </div>
 """, unsafe_allow_html=True)
 
-chat_tab, uploads_tab, results_tab = st.tabs(["Chat", "Uploaded invoices", "Results"])
+chat_tab, uploads_tab, results_tab = st.tabs(["Чат", "Оруулсан нэхэмжлэх", "Үр дүн"])
 
 with chat_tab:
     for m in st.session_state.ch:
-        with st.chat_message(m["role"], avatar="AI" if m["role"]=="assistant" else "ME"):
+        with st.chat_message(m["role"], avatar="🤖" if m["role"]=="assistant" else "👤"):
             st.markdown(m["content"])
-    q=st.chat_input("Ask about invoices, decisions, vendors, errors, or report sections") or st.session_state.pop("qi",None)
+    q=st.chat_input("Нэхэмжлэх, шийдвэр, vendor, алдаа эсвэл тайлангийн талаар асууна уу") or st.session_state.pop("qi",None)
     if q:
         st.session_state.ch.append({"role":"user","content":q})
-        with st.chat_message("user", avatar="ME"):
+        with st.chat_message("user", avatar="👤"):
             st.markdown(q)
-        with st.chat_message("assistant", avatar="AI"):
-            with st.spinner("Thinking"):
+        with st.chat_message("assistant", avatar="🤖"):
+            with st.spinner("Бодож байна"):
                 ans=ask_agent(q)
             st.markdown(ans)
         st.session_state.ch.append({"role":"assistant","content":ans})
 
 with uploads_tab:
     if not st.session_state.processed_uploads:
-        st.info("No invoices uploaded in this session yet. Use the sidebar upload control.")
+        st.info("Энэ session-д шинэ нэхэмжлэх оруулаагүй байна. Зүүн талын upload хэсгийг ашиглана уу.")
     for r in st.session_state.processed_uploads:
         with st.expander(f"{r.get('filename')} · {r.get('decision')}", expanded=False):
             c1,c2,c3=st.columns(3)
-            c1.metric("Vendor", r.get("vendor_name") or "?")
-            c2.metric("Amount", f"{(r.get('grand_total') or 0):,}₮")
-            c3.metric("Category", r.get("category") or "?")
-            st.markdown(f"**Date:** {r.get('invoice_date') or '?'} -> {r.get('due_date') or '?'}")
+            c1.metric("Нийлүүлэгч", r.get("vendor_name") or "?")
+            c2.metric("Дүн", f"{(r.get('grand_total') or 0):,}₮")
+            c3.metric("Ангилал", r.get("category") or "?")
+            st.markdown(f"**Огноо:** {r.get('invoice_date') or '?'} -> {r.get('due_date') or '?'}")
             if r.get("line_items"):
                 st.dataframe(r["line_items"], use_container_width=True, hide_index=True)
             issues=r.get("issues") or []
@@ -300,22 +369,22 @@ with uploads_tab:
                 for issue in issues:
                     st.error(f"{issue_type(issue)}: {issue_detail(issue)}")
             else:
-                st.success("All validation checks passed.")
+                st.success("Бүх шалгалт амжилттай.")
 
 with results_tab:
     c1,c2=st.columns([1,1])
     with c1:
-        st.subheader("Issue breakdown")
-        st.dataframe([{"Issue":k,"Count":v} for k,v in sorted(s["issues"].items())], use_container_width=True, hide_index=True)
-        st.subheader("File types")
+        st.subheader("Алдааны задаргаа")
+        st.dataframe([{"Алдаа":k,"Тоо":v} for k,v in sorted(s["issues"].items())], use_container_width=True, hide_index=True)
+        st.subheader("Файлын төрөл")
         st.dataframe([
-            {"Type":"JPG/JPEG","Count":s["jpg"]},
-            {"Type":"PNG","Count":s["png"]},
-            {"Type":"PDF","Count":s["pdf"]},
-            {"Type":"Handwritten","Count":s["handwritten"]},
+            {"Төрөл":"JPG/JPEG","Тоо":s["jpg"]},
+            {"Төрөл":"PNG","Тоо":s["png"]},
+            {"Төрөл":"PDF","Тоо":s["pdf"]},
+            {"Төрөл":"Гар бичмэл","Тоо":s["handwritten"]},
         ], use_container_width=True, hide_index=True)
     with c2:
-        st.subheader("Denied invoices")
+        st.subheader("DENY болсон нэхэмжлэх")
         denied=[r for r in st.session_state.invoice_results if r.get("decision")=="DENY"]
-        rows=[{"Invoice":r.get("filename"),"Vendor":r.get("vendor_name"),"Issues":", ".join(issue_type(i) for i in r.get("issues",[])),"Amount":r.get("grand_total")} for r in denied]
+        rows=[{"Нэхэмжлэх":r.get("filename"),"Нийлүүлэгч":r.get("vendor_name"),"Алдаа":", ".join(issue_type(i) for i in r.get("issues",[])),"Дүн":r.get("grand_total")} for r in denied]
         st.dataframe(rows, use_container_width=True, hide_index=True)

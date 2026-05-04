@@ -3131,11 +3131,38 @@
       ],
       "file_type": "PDF",
       "is_handwritten": false
+    },
+    {
+      "invoice_number": "099",
+      "vendor_name": "Демо Компани-3",
+      "bank_name": "Демо Банк 1",
+      "account_number": "4001122334",
+      "email": "accounts@demo3.mn",
+      "invoice_date": "2026-03-29",
+      "due_date": "2026-04-13",
+      "line_items": [
+        {
+          "description": "Монитор",
+          "quantity": 4,
+          "unit_price": 280000,
+          "total": 1120000
+        }
+      ],
+      "grand_total": 1120000,
+      "filename": "invoice_099.pdf",
+      "category": "Мэдээллийн технологийн зардал",
+      "decision": "AUTO_POST",
+      "issues": [],
+      "file_type": "PDF",
+      "is_handwritten": false,
+      "decision_reasons": [
+        "Registered vendor, all checks passed"
+      ]
     }
   ],
   "summary": {
-    "total_invoices": 100,
-    "auto_post_count": 72,
+    "total_invoices": 101,
+    "auto_post_count": 73,
     "human_approval_count": 0,
     "deny_count": 28,
     "issue_breakdown": {
@@ -3145,11 +3172,11 @@
       "UNREGISTERED_VENDOR": 5,
       "DUPLICATE": 5
     },
-    "total_amount": 66110000,
+    "total_amount": 67230000,
     "denied_amount": 28210000,
     "jpg_count": 15,
     "png_count": 4,
-    "pdf_count": 81,
+    "pdf_count": 82,
     "handwritten_count": 15,
     "duplicate_count": 5,
     "unregistered_vendor_count": 5,
