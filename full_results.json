@@ -3133,24 +3133,30 @@
       "is_handwritten": false
     },
     {
-      "invoice_number": "099",
-      "vendor_name": "Демо Компани-3",
+      "invoice_number": "100",
+      "vendor_name": "Демо Компани-10",
       "bank_name": "Демо Банк 1",
-      "account_number": "4001122334",
-      "email": "accounts@demo3.mn",
-      "invoice_date": "2026-03-29",
-      "due_date": "2026-04-13",
+      "account_number": "1002233445",
+      "email": "logistics@demo10.mn",
+      "invoice_date": "2026-03-28",
+      "due_date": "2026-04-12",
       "line_items": [
         {
           "description": "Монитор",
-          "quantity": 4,
+          "quantity": 1,
           "unit_price": 280000,
-          "total": 1120000
+          "total": 280000
+        },
+        {
+          "description": "Принтер",
+          "quantity": 1,
+          "unit_price": 320000,
+          "total": 320000
         }
       ],
-      "grand_total": 1120000,
-      "filename": "invoice_099.pdf",
-      "category": "Мэдээллийн технологийн зардал",
+      "grand_total": 600000,
+      "filename": "invoice_100.pdf",
+      "category": "Тээвэр, логистик",
       "decision": "AUTO_POST",
       "issues": [],
       "file_type": "PDF",
@@ -3172,7 +3178,7 @@
       "UNREGISTERED_VENDOR": 5,
       "DUPLICATE": 5
     },
-    "total_amount": 67230000,
+    "total_amount": 66710000,
     "denied_amount": 28210000,
     "jpg_count": 15,
     "png_count": 4,

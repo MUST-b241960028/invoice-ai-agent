@@ -32,7 +32,6 @@ master_db = load_db()
 RESULTS_PATH = Path(__file__).parent / "full_results.json"
 RESULTS_CSV_PATH = Path(__file__).parent / "invoice_results.csv"
 
-@st.cache_data
 def load_initial_results():
     if not RESULTS_PATH.exists():
         return []
