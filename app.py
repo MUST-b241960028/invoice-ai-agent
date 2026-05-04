@@ -9,7 +9,7 @@ from pathlib import Path
 
 st.set_page_config(page_title="AI Нэхэмжлэхийн Агент", page_icon="🧾", layout="wide")
 
-# API KEY
+# Anthropic API түлхүүрийг орчны хувьсагчаас унших, эсвэл sidebar-аас авах
 api_key = os.environ.get("ANTHROPIC_API_KEY", "")
 if not api_key:
     api_key = st.sidebar.text_input("Anthropic API Key", type="password")
@@ -17,7 +17,7 @@ if not api_key:
     st.warning("👈 API key оруулна уу"); st.stop()
 client = anthropic.Anthropic(api_key=api_key)
 
-# DB
+# Мастер мэдээллийн санг нэг удаа ачаалж кэшлэх (vendor, ангилал, түүхэн нэхэмжлэх)
 DB_PATH = Path(__file__).parent / "master_invoices_database.db"
 @st.cache_resource
 def load_db():
@@ -29,9 +29,11 @@ def load_db():
     return {"vendors":vendors,"categories":categories,"historical_invoices":historical}
 master_db = load_db()
 
+# Өмнөх run-ийн үр дүнг JSON болон CSV хэлбэрээр хадгалах зам
 RESULTS_PATH = Path(__file__).parent / "full_results.json"
 RESULTS_CSV_PATH = Path(__file__).parent / "invoice_results.csv"
 
+# Өмнө хадгалсан үр дүнг ачаалах — байхгүй бол хоосон жагсаалт буцаана
 def load_initial_results():
     if not RESULTS_PATH.exists():
         return []
@@ -44,6 +46,7 @@ def issue_type(issue):
 def issue_detail(issue):
     return issue.get("detail") or issue.get("d") or ""
 
+# Dashboard болон chat-д хэрэгтэй нийт тоон үзүүлэлтүүдийг тооцно.
 def summarize_results(results):
     issue_counts = {}
     for r in results:
@@ -65,6 +68,7 @@ def summarize_results(results):
         "denied_amount": sum(r.get("grand_total") or 0 for r in denied),
     }
 
+# JSON файлд хадгалах summary-г full_results.json-ийн schema-д тааруулна.
 def full_summary(results):
     s = summarize_results(results)
     issues = s["issues"]
@@ -87,9 +91,11 @@ def full_summary(results):
         "invalid_date_count": issues.get("INVALID_DATE", 0),
     }
 
+# Нэг invoice-ийн line item нийт дүнг дахин бодож CSV-д бичихэд ашиглана.
 def line_items_total(record):
     return sum((li.get("total") or 0) for li in record.get("line_items") or [])
 
+# Боловсруулсан үр дүнг persistent JSON/CSV санах ой руу бичнэ.
 def persist_results(results):
     output = {"results": results, "summary": full_summary(results)}
     if RESULTS_PATH.exists():
@@ -132,6 +138,7 @@ def persist_results(results):
                 "Line_Items_Total": line_items_total(r),
             })
 
+# Claude chat context-д оруулахын тулд invoice record-уудыг compact болгоно.
 def compact_results(results):
     compact = []
     for r in results:
@@ -161,6 +168,7 @@ def compact_results(results):
         })
     return compact
 
+# Duplicate fingerprint хийхийн тулд барааны мөрүүдийг normalize хийж эрэмбэлнэ.
 def normalized_line_items(record):
     items = []
     for item in record.get("line_items") or []:
@@ -173,6 +181,7 @@ def normalized_line_items(record):
         ))
     return tuple(sorted(items))
 
+# Агуулгаар давхардал шалгах үндсэн fingerprint: vendor, огноо, дүн, данс, мөрүүд.
 def normalized_invoice_fingerprint(record):
     vendor = re.sub(r"\s*[-–—]\s*", "-", (record.get("vendor_name") or "").strip().lower())
     invoice_date = (record.get("invoice_date") or "").replace("/", "-")
@@ -183,6 +192,7 @@ def normalized_invoice_fingerprint(record):
         return None
     return vendor, invoice_date, total, account, line_items
 
+# Сул давхардал шалгах түлхүүр: зөвхөн vendor, огноо, дүн.
 def normalized_business_key(record):
     vendor = re.sub(r"\s*[-–—]\s*", "-", (record.get("vendor_name") or "").strip().lower())
     invoice_date = (record.get("invoice_date") or "").replace("/", "-")
@@ -191,6 +201,7 @@ def normalized_business_key(record):
         return None
     return vendor, invoice_date, total
 
+# Шинэ invoice-г өмнө хадгалсан invoice-уудтай exact болон possible байдлаар тулгана.
 def find_duplicate_result(extracted):
     fingerprint = normalized_invoice_fingerprint(extracted)
     business_key = normalized_business_key(extracted)
@@ -204,6 +215,7 @@ def find_duplicate_result(extracted):
             return existing, "same_vendor_date_total"
     return None
 
+# Олдсон duplicate invoice-ийн хамгийн хэрэгтэй талбаруудыг UI-д өгөхөөр багасгана.
 def duplicate_match_payload(record):
     if not record:
         return None
@@ -215,19 +227,24 @@ def duplicate_match_payload(record):
         "grand_total": record.get("grand_total"),
     }
 
+# ── БАТАЛГААЖУУЛАЛТ: 5 төрлийн зөрчил шалгах ──────────────────────────────
 def validate(data):
     issues = []
+    # 1. Дүнгийн шалгалт: тоо × үнэ = мөрийн дүн эсэх, нийлбэр = нийт дүн эсэх
     for i,li in enumerate(data.get("line_items") or []):
         exp=(li.get("quantity") or 0)*(li.get("unit_price") or 0); tot=li.get("total") or 0
         if exp and tot and exp!=tot: issues.append({"type":"AMOUNT_MISMATCH","detail":f"Line {i+1}: {li.get('quantity')}×{li.get('unit_price'):,}={exp:,}, shows {tot:,}"})
     ls=sum((li.get("total") or 0) for li in data.get("line_items") or []); gt=data.get("grand_total") or 0
     if ls and gt and ls!=gt: issues.append({"type":"AMOUNT_MISMATCH","detail":f"Sum {ls:,} ≠ total {gt:,}"})
+    # 2. Нийлүүлэгчийн шалгалт: нэрийг normalize хийж мастер DB-тай тулгана
     vname=re.sub(r"\s*[-–—]\s*","-",(data.get("vendor_name") or "").strip().lower())
     vendor=next((v for v in master_db["vendors"] if re.sub(r"\s*[-–—]\s*","-",v["Name"].lower())==vname),None)
     if not vendor: issues.append({"type":"UNREGISTERED_VENDOR","detail":f"'{data.get('vendor_name')}' not in DB"})
     if vendor:
+        # 3. Банкны данс шалгалт: нэхэмжлэх дээрх данс нийлүүлэгчийн бүртгэлтэй таарах эсэх
         inv_acc=(data.get("account_number") or "").strip()
         if inv_acc and inv_acc!=vendor["Account"]: issues.append({"type":"BANK_ACCOUNT_MISMATCH","detail":f"Account: {inv_acc} vs DB: {vendor['Account']}"})
+    # 4. Огнооны шалгалт: задлах боломжтой эсэх, due < invoice эсэх, 02-30 гэх мэт
     def pd(s):
         if not s: return None
         try: return datetime.strptime(s.replace("/","-"),"%Y-%m-%d")
@@ -236,6 +253,7 @@ def validate(data):
     if data.get("invoice_date") and not id_: issues.append({"type":"INVALID_DATE","detail":f"Cannot parse '{data.get('invoice_date')}'"})
     if id_ and dd_ and dd_<id_: issues.append({"type":"INVALID_DATE","detail":"Due date before invoice date"})
     if (data.get("invoice_date") or "").replace("/","-").endswith("02-30"): issues.append({"type":"INVALID_DATE","detail":"Feb 30 does not exist"})
+    # 5. Давхардлын шалгалт: session болон 596 түүхэн нэхэмжлэхтэй vendor+огноо+дүнгээр тулгана
     existing_duplicate = find_duplicate_result(data)
     if existing_duplicate:
         existing_record, match_type = existing_duplicate
@@ -259,10 +277,12 @@ def validate(data):
                     "detail":f"Мастер DB дахь historical invoice ID={h['ID']} бичлэгтэй давхцаж байна: vendor + огноо + дүн ижил",
                     "matched_invoice":{"historical_id":h["ID"],"vendor_name":h.get("VendorName"),"invoice_date":h.get("InvoiceDate"),"grand_total":h.get("GrandTotal")},
                 }); break
+    # Зөрчил байвал DENY, зөрчилгүй бүртгэлтэй vendor бол AUTO_POST, эс бол HUMAN_APPROVAL
     deny={"AMOUNT_MISMATCH","BANK_ACCOUNT_MISMATCH","UNREGISTERED_VENDOR","INVALID_DATE","DUPLICATE"}
     decision="DENY" if any(i["type"] in deny for i in issues) else ("AUTO_POST" if vendor else "HUMAN_APPROVAL")
     return issues,decision,vendor
 
+# ── АНГИЛАЛ: vendor түүх → түлхүүр үг → "Бусад" давхар стратеги ──────────
 def classify(data,vendor):
     desc=" ".join((li.get("description") or "") for li in data.get("line_items") or []).lower()
     if vendor:
@@ -281,17 +301,22 @@ def classify(data,vendor):
         if n>bestN: best,bestN=cat,n
     return best
 
+# ── МЭДЭЭЛЭЛ ОЛБОРЛОХ: Claude Vision API-д илгээх prompt ─────────────────
 PROMPT='Extract ALL data from this Mongolian invoice. Return ONLY JSON (no markdown): {"invoice_number":"str","vendor_name":"str","bank_name":"str","account_number":"str","email":"str","invoice_date":"YYYY-MM-DD","due_date":"YYYY-MM-DD","line_items":[{"description":"str","quantity":number,"unit_price":number,"total":number}],"grand_total":number}. Read handwriting carefully.'
 
 def process(fb,ft):
+    # PDF бол PyMuPDF-ээр эхний хуудсыг 200 DPI PNG болгон хөрвүүлнэ
     if ft=="application/pdf":
         doc=fitz.open(stream=fb,filetype="pdf"); ib=doc[0].get_pixmap(dpi=200).tobytes("png"); doc.close(); mt="image/png"
     else: ib=fb; mt="image/jpeg" if ft in ["image/jpeg","image/jpg"] else "image/png"
+    # Зургийг base64 кодлож Claude Vision API-д илгээж, JSON хариу авна
     b64=base64.standard_b64encode(ib).decode()
     resp=client.messages.create(model="claude-sonnet-4-20250514",max_tokens=2000,messages=[{"role":"user","content":[{"type":"image","source":{"type":"base64","media_type":mt,"data":b64}},{"type":"text","text":PROMPT}]}])
     text=resp.content[0].text.strip().replace("```json","").replace("```","").strip()
     return json.loads(text)
 
+# ── SESSION STATE: хуудас дахин ачаалагдахад өгөгдлийг хадгалах ──────────
+# Session state-д invoice list, upload history, chat history-г нэг удаа эхлүүлнэ.
 if "invoice_results" not in st.session_state:
     st.session_state.invoice_results = load_initial_results()
 if "processed_uploads" not in st.session_state:
@@ -302,6 +327,8 @@ if "ch" not in st.session_state:
         "content": "Сайн байна уу. Нэхэмжлэхийн үр дүн, DENY шалтгаан, давхардал, тооцооллын алдаа, vendor эсвэл тайлангийн хэсгүүдийн талаар асуугаарай."
     }]
 
+# ── Q&A АГЕНТ: боловсруулсан бүх нэхэмжлэхийг context болгон Claude-д өгнө ─
+# Chat agent-д өгөх context-ийг current persisted invoice results-оос байгуулна.
 def build_chat_context():
     return f"""You are an AI Invoice Agent for a Mongolian invoice-processing demo.
 Use ONLY the data below. Answer in the same language as the question.
@@ -320,10 +347,12 @@ Invoice records:
 {json.dumps(compact_results(st.session_state.invoice_results),ensure_ascii=False,indent=2)}
 """
 
+# Хэрэглэгчийн асуултыг Claude API руу илгээж invoice data дээр хариулт авна.
 def ask_agent(question):
     resp=client.messages.create(model="claude-sonnet-4-20250514",max_tokens=900,messages=[{"role":"user","content":build_chat_context()+"\n\nQ: "+question}])
     return resp.content[0].text
 
+# Upload хийсэн invoice-ийн үр дүнг chat-д уншихад эвтэйхэн summary болгоно.
 def render_invoice_result(record):
     issue_names=", ".join(issue_type(i) for i in record.get("issues",[])) or "Байхгүй"
     issue_details="\n".join(f"- {issue_type(i)}: {issue_detail(i)}" for i in record.get("issues",[]))
@@ -338,6 +367,7 @@ Vendor: {record.get('vendor_name') or '?'}
 {issue_details}
 """
 
+# Upload invoice-г extract -> validate -> classify -> persist pipeline-аар оруулна.
 def process_upload(uploaded_file):
     fb=uploaded_file.read()
     ext=process(fb,uploaded_file.type)
